@@ -1,551 +1,896 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="pt-BR"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>izgame - The Neon Vault</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Manrope:wght@400;500&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-                    "on-tertiary-container": "#00485d",
-                    "tertiary-fixed": "#70d6ff",
-                    "primary": "#77b0ff",
-                    "surface-variant": "#23262c",
-                    "surface-container-low": "#111318",
-                    "on-error-container": "#ffa8a3",
-                    "tertiary-dim": "#60c8f0",
-                    "secondary-fixed-dim": "#aec4ef",
-                    "error-dim": "#d7383b",
-                    "tertiary-container": "#70d6ff",
-                    "secondary-container": "#31476b",
-                    "secondary-dim": "#aec4ef",
-                    "on-secondary-fixed": "#1e3457",
-                    "on-secondary": "#32486c",
-                    "surface-container-high": "#1d2025",
-                    "error-container": "#9f0519",
-                    "primary-container": "#5aa2ff",
-                    "surface-tint": "#77b0ff",
-                    "on-surface-variant": "#aaabb0",
-                    "primary-fixed-dim": "#3295ff",
-                    "secondary-fixed": "#bcd2fe",
-                    "on-tertiary-fixed-variant": "#005269",
-                    "tertiary-fixed-dim": "#60c8f0",
-                    "error": "#ff716c",
-                    "on-surface": "#f6f6fc",
-                    "on-secondary-fixed-variant": "#3b5176",
-                    "secondary": "#bcd2fe",
-                    "surface-container": "#171a1f",
-                    "background": "#0c0e12",
-                    "primary-dim": "#53a0ff",
-                    "on-primary-fixed-variant": "#002c57",
-                    "on-primary-fixed": "#000000",
-                    "on-background": "#f6f6fc",
-                    "on-secondary-container": "#bbd1fc",
-                    "outline-variant": "#46484d",
-                    "surface-container-highest": "#23262c",
-                    "inverse-on-surface": "#53555a",
-                    "surface-container-lowest": "#000000",
-                    "on-primary-container": "#002347",
-                    "surface-dim": "#0c0e12",
-                    "outline": "#74757a",
-                    "on-tertiary": "#005269",
-                    "inverse-primary": "#005fb0",
-                    "surface": "#0c0e12",
-                    "on-primary": "#002f5b",
-                    "tertiary": "#9de1ff",
-                    "on-error": "#490006",
-                    "primary-fixed": "#5aa2ff",
-                    "surface-bright": "#292c33",
-                    "on-tertiary-fixed": "#003342",
-                    "inverse-surface": "#f9f9ff"
-            },
-            "borderRadius": {
-                    "DEFAULT": "0.125rem",
-                    "lg": "0.25rem",
-                    "xl": "0.5rem",
-                    "full": "0.75rem"
-            },
-            "fontFamily": {
-                    "headline": ["Plus Jakarta Sans"],
-                    "body": ["Manrope"],
-                    "label": ["Space Grotesk"]
-            }
-          },
-        },
-      }
-    </script>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IZGAME — Portal de Avaliações de Poker & Conhecimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            background-color: #0c0e12;
-            color: #f6f6fc;
-            font-family: 'Manrope', sans-serif;
-        }
-        .glass-nav {
-            background: rgba(12, 14, 18, 0.8);
-            backdrop-filter: blur(20px);
-        }
-        .neon-glow {
-            filter: drop-shadow(0 0 8px rgba(119, 176, 255, 0.3));
-        }
-        .status-pulse {
-            position: relative;
-        }
-        .status-pulse::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: #9de1ff;
-            border-radius: 50%;
-            z-index: -1;
-            animation: pulse-ring 2s infinite;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            100% { transform: scale(2.5); opacity: 0; }
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+:root {
+  --cyan: #00D2FF;
+  --cyan-hover: #33dcff;
+  --cyan-dim: rgba(0, 210, 255, 0.12);
+  --cyan-border: rgba(0, 210, 255, 0.28);
+  --bg: #07090D;
+  --surface: #0F1318;
+  --surface-card: #151A22;
+  --surface-hover: #1C232E;
+  --border: #222935;
+  --border-light: #2D3747;
+  --text: #F3F6FA;
+  --text-secondary: #9BA8BA;
+  --text-muted: #677587;
+  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --tag-green: #10B981;
+  --tag-gold: #F59E0B;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 210, 255, 0.15), transparent 70%),
+    radial-gradient(circle at 10% 40%, rgba(0, 210, 255, 0.04), transparent 40%);
+  min-height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header & Nav */
+.header-wrap {
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  padding: 0 24px;
+  margin-bottom: 20px;
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 72px;
+  background: rgba(15, 19, 24, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-heading);
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+.brand svg {
+  width: 36px;
+  height: 36px;
+  filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.4));
+}
+.brand span {
+  color: var(--text);
+}
+.brand .dot {
+  color: var(--cyan);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.nav-links a:hover {
+  color: var(--cyan);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.lang-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-primary {
+  background: var(--cyan);
+  color: #03131A;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0, 210, 255, 0.35);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  background: var(--cyan-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(0, 210, 255, 0.45);
+}
+.btn-secondary {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-light);
+  color: #fff;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 70px 0 60px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan-border);
+  padding: 6px 16px;
+  border-radius: 99px;
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+}
+.hero-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--cyan);
+}
+.hero h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(38px, 5.2vw, 68px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  max-width: 900px;
+  margin: 0 auto 24px;
+  color: #fff;
+}
+.hero h1 span {
+  background: linear-gradient(135deg, #00D2FF 0%, #7FE4FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p {
+  color: var(--text-secondary);
+  font-size: 18px;
+  max-width: 660px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.hero-cta .btn-primary {
+  padding: 14px 28px;
+  font-size: 15px;
+}
+.hero-cta .btn-secondary {
+  padding: 14px 26px;
+  font-size: 15px;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stat-val {
+  font-family: var(--font-heading);
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+}
+.stat-val span { color: var(--cyan); }
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Filter bar & Section Header */
+.section {
+  padding: 50px 0;
+}
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.section-title-wrap .sub-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: block;
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  line-height: 1.2;
+}
+.section-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+}
+
+/* Rooms Table / Cards */
+.rooms-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.room-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 28px;
+  display: grid;
+  grid-template-columns: 210px 1fr 210px 180px;
+  align-items: center;
+  gap: 24px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.room-card::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
+  background: transparent;
+  transition: background 0.25s;
+}
+.room-card:hover {
+  background: var(--surface-card);
+  border-color: var(--cyan-border);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+}
+.room-card:hover::after {
+  background: var(--cyan);
+}
+
+.room-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.room-logo-box {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: #090C10;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--cyan);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+  flex-shrink: 0;
+}
+.room-name-wrap h3 {
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.verified-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--tag-green);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.room-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.room-details-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.room-details-list li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.room-details-list li::before {
+  content: "✦";
+  color: var(--cyan);
+  font-size: 10px;
+}
+
+.room-score-box {
+  background: rgba(0, 210, 255, 0.05);
+  border: 1px solid var(--cyan-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: center;
+}
+.score-num {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--cyan);
+  line-height: 1;
+}
+.score-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.stars {
+  color: #F59E0B;
+  font-size: 12px;
+  margin-top: 4px;
+  letter-spacing: 2px;
+}
+
+.room-actions-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-card-action {
+  width: 100%;
+  text-align: center;
+  padding: 11px 14px;
+  font-size: 13px;
+}
+.link-review {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.link-review:hover {
+  color: var(--cyan);
+}
+
+/* Feature Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.feature-card:hover {
+  border-color: var(--border-light);
+  background: var(--surface-card);
+  transform: translateY(-2px);
+}
+.feature-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan-border);
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.feature-card h3 {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Banner / CTA Box */
+.partnership-banner {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.12) 0%, rgba(15, 19, 24, 0.95) 75%), var(--surface);
+  border: 1px solid var(--cyan-border);
+  border-radius: 24px;
+  padding: 44px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin: 40px 0;
+}
+.partnership-banner h2 {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.partnership-banner p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  padding: 50px 0 40px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+.footer-brand p {
+  max-width: 380px;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.footer-links-group {
+  display: flex;
+  gap: 48px;
+}
+.footer-col h4 {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  font-family: var(--font-heading);
+}
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-col a {
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.footer-col a:hover {
+  color: var(--cyan);
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .room-card {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  .partnership-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px;
+  }
+}
+@media (max-width: 680px) {
+  .nav-inner {
+    padding: 0 16px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .room-card {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  .hero h1 {
+    font-size: 34px;
+  }
+  .hero-stats {
+    gap: 20px;
+  }
+}
+
+/* IZGAME: camada pontilhada interativa, sem alterar o layout existente */
+#izgame-dots {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+/* O conteúdo permanece acima da camada de pontos. */
+body > main, body > footer { position: relative; z-index: 1; }
+</style>
 </head>
-<body class="bg-background selection:bg-primary/30">
-<!-- TopNavBar -->
-<header class="fixed top-0 w-full z-50 glass-nav border-b border-primary/10">
-<div class="flex justify-between items-center px-8 h-20 w-full max-w-[1440px] mx-auto">
-<div class="flex items-center gap-12">
-<span class="text-2xl font-bold tracking-tighter text-primary neon-glow font-headline">izgame</span>
-<nav class="hidden lg:flex items-center gap-8 font-headline font-semibold tracking-tight">
-<a class="text-primary border-b-2 border-primary pb-1" href="#">Notícias</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Blogs</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Avaliações</a>
-<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Fórum</a>
-</nav>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all">
-<span class="material-symbols-outlined" data-icon="search">search</span>
-</button>
-<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all">
-<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-</button>
-<button id="authButton" type="button" class="bg-gradient-to-r from-primary to-primary-container text-on-primary-container px-6 py-2.5 rounded-xl font-headline font-bold transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-primary/20">Entrar</button><button id="logoutButton" type="button" class="hidden px-3 py-2 text-sm border border-outline-variant rounded-xl">Sair</button>
-</div>
-</div>
+<body>
+<canvas id="izgame-dots" aria-hidden="true"></canvas>
+
+<header class="header-wrap">
+  <nav class="nav-inner">
+    <a href="#inicio" class="brand">
+      <svg viewBox="0 0 150 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#00D2FF" d="M20 9h26L21 100H0L25 18Q28 9 36 9Z" transform="translate(8,0)"/>
+        <path fill="#00D2FF" d="M64 9h83L87 73h52l-8 27H48l62-66H57z"/>
+      </svg>
+      <span>izgame<span class="dot">.</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#salas">Salas de Poker</a></li>
+      <li><a href="#criterios">Metodologia</a></li>
+      <li><a href="#guias">Guias & Estratégia</a></li>
+      <li><a href="#parcerias">Parcerias</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="lang-badge">🇧🇷 PT-BR</div>
+      <a href="#salas" class="btn-primary">Explorar Salas</a>
+    </div>
+  </nav>
 </header>
-<main class="pt-24 min-h-screen max-w-[1440px] mx-auto flex gap-6 px-8">
-<!-- SideNavBar - Centered Alignment Style from SCREEN_31 -->
-<aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 bg-surface-container-low sticky top-24 rounded-2xl border border-primary/5">
-<div class="mb-6">
-<h3 class="text-primary font-bold font-headline text-lg">Navegação</h3>
-<p class="text-on-surface-variant text-xs uppercase tracking-widest">Explore o Santuário</p>
-</div>
-<nav class="flex flex-col gap-1 font-label font-medium text-sm">
-<a class="flex items-center gap-3 p-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-primary/10 hover:translate-x-1 transition-all" href="#">
-<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
-<span class="font-medium text-base">Home</span>
-</a>
-<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
-<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
-<span class="font-medium text-base">Torneios</span>
-</a>
-<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
-<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
-<span class="font-medium text-base">Estratégia</span>
-</a>
-<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
-<span class="material-symbols-outlined" data-icon="style">style</span>
-<span class="font-medium text-base">Mãos do Dia</span>
-</a>
-<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
-<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
-<span class="font-medium text-base">Ranking</span>
-</a>
-</nav>
-<div class="mt-8 pt-8 border-t border-outline-variant/10">
-<a class="px-4 py-2 flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors text-xs font-label uppercase tracking-widest" href="#">
-<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span> Configurações
-                </a>
-<a class="px-4 py-2 flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors text-xs font-label uppercase tracking-widest" href="#">
-<span class="material-symbols-outlined text-sm" data-icon="help_outline">help_outline</span> Suporte
-                </a>
-</div>
-<button id="newDiscussionButton" class="mt-auto bg-gradient-to-r from-primary to-primary-container text-on-primary-container py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-105 transition-all">
-                Nova Discussão
-            </button>
-</aside>
-<!-- Main Content Area -->
-<div class="flex-1 flex flex-col gap-8 pb-20">
-<!-- Hero Section -->
-<section class="relative h-[440px] rounded-2xl overflow-hidden group">
-<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Cinematic wide shot of a high-stakes poker tournament arena with neon blue lighting and professional players focused around a dark felt table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkP_aB12bfjCeQMOWBGJBJMVS2FTPwFeLZoUOn0GaYwlUTTaYX9xKCYV-d-4ld5081GwBMb8TLzc9widhNq8g7F7HQCLQZdH6c9FzhgNPLYf9EtKKMTV9iIA3gw8kkGW1WNAhZ8myh1gf5g2N81ZvRKHmGTtKz-uZCJqW16E0eec-YOk3DFawezzVWh6_zULYDeD3hFDsEsWC7U_YTkAkh5cK86dcu20uLbe35j-gY03rvV24T4uGMyiCVjIvHHBmnBK5PIwKt-qw')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
-<div class="absolute bottom-0 left-0 p-10 max-w-2xl">
-<div class="flex items-center gap-3 mb-4">
-<span class="bg-primary text-on-primary-container px-3 py-1 rounded-full text-xs font-label font-bold uppercase tracking-widest">Destaque</span>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 rounded-full bg-tertiary status-pulse"></div>
-<span class="text-tertiary font-label text-xs uppercase tracking-widest">Live: Dia 4</span>
-</div>
-</div>
-<h1 class="text-5xl font-headline font-bold text-on-surface mb-4 leading-tight">WSOP Main Event: <br/><span class="text-primary neon-glow">O Caminho para a Glória</span></h1>
-<p class="text-on-surface-variant text-lg font-body mb-8">Acompanhe a cobertura em tempo real da mesa final. Análises técnicas, estatísticas dos jogadores e as mãos que definiram o torneio.</p>
-<div class="flex gap-4">
-<button class="bg-primary text-on-primary-container px-8 py-3 rounded-xl font-headline font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/30">Ver Cobertura</button>
-<button class="bg-surface-container-high/60 backdrop-blur-md border border-outline-variant/30 text-on-surface px-8 py-3 rounded-xl font-headline font-bold transition-all hover:scale-[1.02] active:scale-95">Ver Estatísticas</button>
-</div>
-</div>
-</section>
-<!-- Live Discussion Section -->
-<div class="space-y-6">
-<div class="flex items-center justify-between">
-<h2 class="text-2xl font-bold text-on-surface font-headline">Discussão ao Vivo</h2>
-<div class="flex gap-2">
-<button class="px-4 py-1.5 rounded-full bg-surface-container-highest text-primary text-xs font-bold font-label transition-colors">Recentes</button>
-<button class="px-4 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface text-xs font-bold font-label transition-all cursor-pointer">Populares</button>
-</div>
-</div>
-<!-- Feed Items -->
-<div class="space-y-4">
-<!-- Feed Item 1 -->
-<article class="bg-surface-container-low p-6 rounded-2xl transition-all hover:bg-surface-container-high border border-primary/5 relative overflow-hidden group">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center"></div>
-<div class="flex gap-6">
-<div class="flex flex-col items-center gap-1 min-w-[44px]">
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="keyboard_arrow_up">keyboard_arrow_up</button>
-<span class="text-sm font-bold text-on-surface">142</span>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</button>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-3 mb-3">
-<img alt="Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxdXUCTwoCB7DS36KYKbdQx1A6ava9XS6O7SPskBSOn4JiYNZcX-qf-SkYcoyeTsxttLJVDG1MYtQj6qPtCUDnWRJAFVM_7MhZGCuYr03LHphCpn_KF8wj7n-jwClBAh89sUl4tZ5-YP0MpolOG-EwnKsgJ_WBUYrEKtt3I65DIQpOrGJJ66SBkZJZTmEsfEjp7GX-5EE41CHZw445D0IpRY0SiVQx9ogXa0f3aTZZCw8-tfpiA5S8hpONDDXtz5PDfpL8750Ey4c"/>
-<span class="text-on-surface-variant font-label text-xs uppercase tracking-wider">u/shark_hunter • 2h atrás</span>
-<span class="ml-auto bg-secondary-container/30 text-secondary px-3 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-widest">Estratégia</span>
-</div>
-<h3 class="text-xl font-headline font-semibold text-on-surface mb-3 group-hover:text-primary transition-colors">Análise: Quando aplicar o 'Donk Lead' em potes multi-way?</h3>
-<p class="text-on-surface-variant font-body text-sm line-clamp-2">Recentemente tenho notado que jogadores experientes estão utilizando o donk lead com ranges mais amplos no flop. Vamos discutir a matemática por trás dessa jogada...</p>
-<div class="flex items-center gap-6 mt-5">
-<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
-<span class="material-symbols-outlined text-lg" data-icon="chat_bubble_outline">chat_bubble_outline</span>
-<span class="text-xs font-label">58 Comentários</span>
-</div>
-<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
-<span class="material-symbols-outlined text-lg" data-icon="share">share</span>
-<span class="text-xs font-label">Compartilhar</span>
-</div>
-</div>
-</div>
-</div>
-</article>
-<!-- Feed Item 2 -->
-<article class="bg-surface-container-low p-6 rounded-2xl transition-all hover:bg-surface-container-high border border-primary/5 relative overflow-hidden group">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center"></div>
-<div class="flex gap-6">
-<div class="flex flex-col items-center gap-1 min-w-[44px]">
-<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="keyboard_arrow_up">keyboard_arrow_up</button>
-<span class="text-sm font-bold text-on-surface">89</span>
-<button class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</button>
-</div>
-<div class="flex-1">
-<div class="flex items-center gap-3 mb-3">
-<img alt="Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_91XRXn-0eDnN5_Je8XYLWw328kItSmsYIQz1OUqLFrMigKswfP23KJnczOVx0es7nIUnQWLPQ6PhbMtrw9s07UF02Z6GUdVKmTjm1XVsKsX4tmS9JQYBDa52Oz-efLfuprjPoQS3vUyLQHBK8FgXC-aEKwlAM3IK8h5iqfEGa87AWr7UOSo8cnNwM6eQ8Nj9gI7O4PS_999R1j1uyIHG3K5QIltSwJLLA8kOaEKTHYZH98u_dQui4RPYp0qz04eqg_0l96rm2Vg"/>
-<span class="text-on-surface-variant font-label text-xs uppercase tracking-wider">u/poker_queen • 5h atrás</span>
-<span class="ml-auto bg-tertiary-container/10 text-tertiary px-3 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-widest">Torneios</span>
-</div>
-<h3 class="text-xl font-headline font-semibold text-on-surface mb-3 group-hover:text-primary transition-colors">Bad Beat no Mystery Bounty da GG: Justo ou Variância?</h3>
-<p class="text-on-surface-variant font-body text-sm line-clamp-2">O que aconteceu nessa mão foi inacreditável. AA vs 72o pré-flop e o cara acerta runner-runner flush. Como lidar com o mental após isso?</p>
-<div class="flex items-center gap-6 mt-5">
-<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
-<span class="material-symbols-outlined text-lg" data-icon="chat_bubble_outline">chat_bubble_outline</span>
-<span class="text-xs font-label">124 Comentários</span>
-</div>
-<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
-<span class="material-symbols-outlined text-lg" data-icon="bookmark">bookmark</span>
-<span class="text-xs font-label">Salvar</span>
-</div>
-</div>
-</div>
-</div>
-</article>
-</div>
-</div>
-</div>
-<!-- Right SideBar - Centered Alignment Style from SCREEN_31 -->
-<aside class="hidden xl:flex flex-col gap-6 w-80 sticky top-24 h-fit">
-<!-- Odds Section -->
-<div class="bg-surface-container-low p-6 rounded-2xl border border-primary/5">
-<h4 class="text-on-surface font-headline font-bold mb-5 flex items-center gap-2">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span> 
-                    Melhores Odds de Apostas
-                </h4>
-<div class="space-y-4">
-<div class="flex justify-between items-center p-4 bg-surface-container-high rounded-xl border-l-4 border-primary">
-<div>
-<p class="text-[10px] text-on-surface-variant font-label uppercase tracking-widest">Premier League</p>
-<p class="text-sm font-bold text-on-surface">Arsenal vs Man City</p>
-</div>
-<span class="text-primary font-black text-sm">2.45 | 3.10</span>
-</div>
-<div class="flex justify-between items-center p-4 bg-surface-container-high rounded-xl">
-<div>
-<p class="text-[10px] text-on-surface-variant font-label uppercase tracking-widest">NBA Regular</p>
-<p class="text-sm font-bold text-on-surface">Lakers vs Warriors</p>
-</div>
-<span class="text-primary font-black text-sm">1.85 | 2.05</span>
-</div>
-</div>
-<button class="w-full mt-6 text-on-surface-variant hover:text-primary font-label text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
-                    Ver Todos os Mercados <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-</button>
-</div>
-<!-- Trending Topics Section -->
-<div class="bg-surface-container-low p-6 rounded-2xl border border-primary/5">
-<h4 class="text-on-surface font-headline font-bold mb-5 flex items-center gap-2">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span> 
-                    Assuntos em Alta
-                </h4>
-<div class="space-y-5">
-<div class="flex items-start gap-4 group cursor-pointer">
-<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">01</span>
-<div>
-<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Bankroll Management para 2024</a>
-<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">1.2k discussões</p>
-</div>
-</div>
-<div class="flex items-start gap-4 group cursor-pointer">
-<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">02</span>
-<div>
-<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Novas Regras da Loteria Federal</a>
-<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">850 discussões</p>
-</div>
-</div>
-<div class="flex items-start gap-4 group cursor-pointer">
-<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">03</span>
-<div>
-<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Melhores Apps de HUD</a>
-<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">430 discussões</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Promotion Card - Integrated styling from SCREEN_31 but with blue theme -->
-<div class="relative rounded-2xl overflow-hidden aspect-square flex flex-col justify-end p-8 group">
-<img alt="Promo" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkfT5gK-RLb5G_cjg_Dy0Z8Zh9hIkQhOAs19v5E0a22yA9TiNlqOdhiUVARWjl6gki8AyYJVj826hoVvh6iGpWet0TjLIjPEm39SvetnfWZVJphJ63r_SYV5I5DMK6kvAEyentGcGS98Y2an9IHkosWdPc6u2lB_CTneHmEThpGfQTewZb5abUKHzrFGxMAk61bRf4-Ue3WMIgIWJek_nfku7mTE45_zu7eMqaunGhRG8E3RqAEFEENNNXDVivWnaS4DRdqU_nCjE"/>
-<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
-<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
-<div class="relative z-10">
-<h5 class="text-white font-headline font-bold text-2xl leading-tight mb-2">Seja Membro VIP Elite</h5>
-<p class="text-on-surface-variant text-sm mb-6">Sessões de coaching exclusivas e análise de mãos para membros.</p>
-<button class="w-full py-3 bg-white text-background font-headline font-bold rounded-xl hover:bg-primary transition-all active:scale-95 shadow-xl">Saiba Mais</button>
-</div>
-</div>
-</aside>
+
+<main class="container" id="inicio">
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">Portal Editorial Independente</div>
+    <h1>O universo do poker.<br><span>Informação técnica para jogar melhor.</span></h1>
+    <p>Avaliações transparentes de salas de poker online, comparativos de rake, análises de softwares e guias estratégicos para tomadas de decisão lucrativas.</p>
+    
+    <div class="hero-cta">
+      <a href="#salas" class="btn-primary">Ver Salas em Destaque →</a>
+      <a href="#guias" class="btn-secondary">Explorar Biblioteca de Guias</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-val">100%</div>
+        <div class="stat-label">Análises Isentas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">30<span>+</span></div>
+        <div class="stat-label">Plataformas Avaliadas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">Rake & HUD</div>
+        <div class="stat-label">Comparações Técnicas</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">2026</div>
+        <div class="stat-label">Dados Atualizados</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Rooms Section -->
+  <section class="section" id="salas">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="sub-tag">Seleção Editorial</span>
+        <h2 class="section-title">Salas de Poker em Destaque</h2>
+        <p class="section-desc">Métricas reais de tráfego, políticas de rake, segurança e suporte para jogadores brasileiros.</p>
+      </div>
+      <a href="#criterios" class="btn-secondary">Nossos Critérios de Avaliação →</a>
+    </div>
+
+    <div class="rooms-grid">
+      <!-- Room 1 -->
+      <article class="room-card">
+        <div class="room-identity">
+          <div class="room-logo-box">♠</div>
+          <div class="room-name-wrap">
+            <h3>Sala Alpha <span class="verified-badge">Verificado</span></h3>
+            <div class="room-meta">Foco: Torneios & Cash Games</div>
+          </div>
+        </div>
+
+        <ul class="room-details-list">
+          <li>Estrutura de rake competitivo e sistema de cashback</li>
+          <li>Excelente volume de tráfego 24/7 em micro e mid stakes</li>
+          <li>Suporte oficial a trackers e ferramentas analíticas</li>
+        </ul>
+
+        <div class="room-score-box">
+          <div class="score-num">9.8</div>
+          <div class="score-label">Nota Editorial</div>
+          <div class="stars">★★★★★</div>
+        </div>
+
+        <div class="room-actions-col">
+          <a href="#parcerias" class="btn-primary btn-card-action">Visitar Sala →</a>
+          <a href="#criterios" class="link-review">Ler review completo</a>
+        </div>
+      </article>
+
+      <!-- Room 2 -->
+      <article class="room-card">
+        <div class="room-identity">
+          <div class="room-logo-box">⬡</div>
+          <div class="room-name-wrap">
+            <h3>Sala Beta <span class="verified-badge">Popular</span></h3>
+            <div class="room-meta">Foco: Spins & Mystery Bounty</div>
+          </div>
+        </div>
+
+        <ul class="room-details-list">
+          <li>Plataforma mobile rápida com depósitos instantâneos via Pix</li>
+          <li>Field recreativo com promoções semanais e leaderboards</li>
+          <li>Interface moderna, sem necessidade de HUD externo</li>
+        </ul>
+
+        <div class="room-score-box">
+          <div class="score-num">9.4</div>
+          <div class="score-label">Nota Editorial</div>
+          <div class="stars">★★★★☆</div>
+        </div>
+
+        <div class="room-actions-col">
+          <a href="#parcerias" class="btn-primary btn-card-action">Visitar Sala →</a>
+          <a href="#criterios" class="link-review">Ler review completo</a>
+        </div>
+      </article>
+
+      <!-- Room 3 -->
+      <article class="room-card">
+        <div class="room-identity">
+          <div class="room-logo-box">✦</div>
+          <div class="room-name-wrap">
+            <h3>Sala Gamma <span class="verified-badge">Iniciantes</span></h3>
+            <div class="room-meta">Foco: Satélites & Freerolls</div>
+          </div>
+        </div>
+
+        <ul class="room-details-list">
+          <li>Excelente ecossistema para construção de bankroll do zero</li>
+          <li>Torneios diários garantidos com baixo buy-in</li>
+          <li>Suporte 24 horas em português e conformidade regulatória</li>
+        </ul>
+
+        <div class="room-score-box">
+          <div class="score-num">9.1</div>
+          <div class="score-label">Nota Editorial</div>
+          <div class="stars">★★★★☆</div>
+        </div>
+
+        <div class="room-actions-col">
+          <a href="#parcerias" class="btn-primary btn-card-action">Visitar Sala →</a>
+          <a href="#criterios" class="link-review">Ler review completo</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Criteria & Transparency Section -->
+  <section class="section" id="criterios">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="sub-tag">Transparência & Rigor</span>
+        <h2 class="section-title">Como avaliamos cada sala</h2>
+        <p class="section-desc">Critérios objetivos separados de qualquer relação comercial para garantir imparcialidade.</p>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-box">📊</div>
+        <h3>Estrutura de Rake & Recompensas</h3>
+        <p>Analisamos os caps e porcentagens de rake cobrados por modalidade, calculando o impacto direto no retorno do jogador a longo prazo.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">💻</div>
+        <h3>Software & Confiabilidade</h3>
+        <p>Estabilidade do client, responsividade no mobile, facilidade de multitablear e integridade dos geradores de números aleatórios (RNG).</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">🛡️</div>
+        <h3>Segurança & Liquidez</h3>
+        <p>Políticas de combate a bots e conluio, velocidade nos saques e tempo de resposta da equipe de suporte.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Knowledge & Guides Section -->
+  <section class="section" id="guias">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="sub-tag">Base de Conhecimento</span>
+        <h2 class="section-title">Guias para Evoluir seu Jogo</h2>
+        <p class="section-desc">Artigos técnicos e conceituais desenvolvidos por quem compreende as nuances do jogo moderno.</p>
+      </div>
+      <a href="#salas" class="btn-secondary">Ver Mais Artigos →</a>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-box">📐</div>
+        <h3>Como o Rake afeta sua Winrate</h3>
+        <p>Um guia detalhado sobre como diferentes modelos de cobrança (Weighted Contributed vs Deal) moldam sua estratégia em micro stakes.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">⚙️</div>
+        <h3>Softwares de Estudo: Trackers e Solvers</h3>
+        <p>Entenda quando vale a pena investir em HUDs e ferramentas de GTO, e quais plataformas permitem o uso simultâneo.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon-box">🎯</div>
+        <h3>Gestão de Bankroll por Formato</h3>
+        <p>Quantos buy-ins ter para Cash Game, MTTs regulares, PKO ou Spins antes de subir de nível com controle de variância.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Commercial / Partnership Banner -->
+  <section class="partnership-banner" id="parcerias">
+    <div>
+      <span class="sub-tag" style="color: var(--cyan); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.1em; display: block; margin-bottom: 8px;">Área Institucional</span>
+      <h2>Parcerias transparentes e verificadas.</h2>
+      <p>Trabalhamos com operadores licenciados garantindo condições claras para a comunidade de poker. Identificamos explicitamente qualquer conteúdo patrocinado.</p>
+    </div>
+    <a href="mailto:contato@izgame.com.br" class="btn-primary" style="white-space: nowrap; padding: 14px 28px;">Falar com a Equipe →</a>
+  </section>
+
 </main>
-<!-- Footer -->
-<footer class="w-full py-16 bg-surface-container-lowest border-t border-surface-container-high mt-12">
-<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center px-8">
-<div class="flex flex-col items-center md:items-start gap-3 mb-10 md:mb-0">
-<span class="text-2xl font-bold text-primary neon-glow font-headline">izgame</span>
-<p class="text-on-surface-variant font-body text-xs max-w-xs text-center md:text-left">A maior comunidade de poker e apostas do Brasil. Onde a estratégia encontra a diversão.</p>
-</div>
-<div class="flex flex-wrap justify-center gap-10 font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">
-<a class="hover:text-primary transition-colors" href="#">Privacidade</a>
-<a class="hover:text-primary transition-colors" href="#">Termos</a>
-<a class="hover:text-primary transition-colors" href="#">Publicidade</a>
-<a class="hover:text-primary transition-colors" href="#">Contato</a>
-</div>
-<div class="mt-10 md:mt-0 flex gap-6">
-<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
-<span class="material-symbols-outlined text-xl" data-icon="public">public</span>
-</a>
-<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
-<span class="material-symbols-outlined text-xl" data-icon="sports_esports">sports_esports</span>
-</a>
-<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
-<span class="material-symbols-outlined text-xl" data-icon="live_tv">live_tv</span>
-</a>
-</div>
-</div>
-<div class="max-w-[1440px] mx-auto px-8 mt-12 pt-8 border-t border-outline-variant/5 text-center">
-<p class="text-on-surface-variant/40 font-label text-[10px] uppercase tracking-[0.3em]">© 2024 izgame. Todos os direitos reservados.</p>
-</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <svg viewBox="0 0 150 110" fill="none" style="width: 28px; height: 28px;">
+            <path fill="#00D2FF" d="M20 9h26L21 100H0L25 18Q28 9 36 9Z" transform="translate(8,0)"/>
+            <path fill="#00D2FF" d="M64 9h83L87 73h52l-8 27H48l62-66H57z"/>
+          </svg>
+          <span>izgame</span>
+        </div>
+        <p>Portal editorial de análises técnicas de poker online, educação e comparativos transparentes para jogadores.</p>
+      </div>
+
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <ul>
+            <li><a href="#salas">Salas de Poker</a></li>
+            <li><a href="#criterios">Critérios de Avaliação</a></li>
+            <li><a href="#guias">Artigos & Guias</a></li>
+            <li><a href="#parcerias">Parcerias Comerciais</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Institucional</h4>
+          <ul>
+            <li><a href="#criterios">Jogo Responsável</a></li>
+            <li><a href="#criterios">Termos de Uso</a></li>
+            <li><a href="#criterios">Política de Privacidade</a></li>
+            <li><a href="mailto:contato@izgame.com.br">Contato</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 IZGAME. Todos os direitos reservados. Conteúdo estritamente informativo para maiores de 18 anos.</div>
+      <div style="color: var(--cyan);">Informação para jogar melhor</div>
+    </div>
+  </div>
 </footer>
 
-<!-- Autenticação IZGAME -->
-<style>
-  .iz-field{display:block;font-size:.875rem}.iz-input{margin-top:.4rem;width:100%;border-radius:.65rem;background:#0c0e12;border:1px solid #46484d;padding:.8rem;color:#f6f6fc}
-  .iz-input:focus{outline:2px solid #77b0ff;outline-offset:1px}.iz-input[aria-invalid="true"]{border-color:#ff716c}
-  .iz-error{font-size:.75rem;color:#ff8d88;margin-top:.3rem;min-height:0}.iz-eye{position:absolute;right:.5rem;top:50%;transform:translateY(-40%);padding:.4rem;color:#bcd2fe}
-</style>
-<div id="authModal" class="hidden fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-  <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl border border-primary/20 bg-surface-container p-7 shadow-2xl">
-    <button id="closeAuth" type="button" aria-label="Fechar" class="absolute right-5 top-4 text-on-surface-variant hover:text-white text-2xl">×</button>
-    <h2 id="authTitle" class="font-headline text-2xl font-bold text-primary mb-2">Entrar no IZGAME</h2>
-    <p id="authDescription" class="text-sm text-on-surface-variant mb-6">Entre para participar da comunidade.</p>
-    <form id="authForm" class="space-y-4" novalidate>
-      <div id="nicknameGroup" class="hidden"><label class="iz-field" for="authNickname">Nome de usuário / Nickname</label><input id="authNickname" class="iz-input" type="text" autocomplete="username" maxlength="24" placeholder="Ex.: PokerMaster" aria-describedby="nicknameError"><p id="nicknameError" class="iz-error" role="alert"></p></div>
-      <div id="emailGroup"><label class="iz-field" for="authEmail">E-mail</label><input id="authEmail" class="iz-input" type="email" autocomplete="email" maxlength="254" placeholder="seu@email.com" aria-describedby="emailError"><p id="emailError" class="iz-error" role="alert"></p></div>
-      <div id="passwordGroup"><label class="iz-field" for="authPassword">Senha</label><div class="relative"><input id="authPassword" class="iz-input pr-12" type="password" autocomplete="current-password" placeholder="Sua senha" aria-describedby="passwordError"><button id="togglePassword" type="button" class="iz-eye" aria-label="Mostrar senha" aria-pressed="false"><span class="material-symbols-outlined">visibility</span></button></div><p id="passwordError" class="iz-error" role="alert"></p></div>
-      <div id="confirmGroup" class="hidden"><label class="iz-field" for="authConfirm">Confirmar senha</label><div class="relative"><input id="authConfirm" class="iz-input pr-12" type="password" autocomplete="new-password" placeholder="Repita sua senha" aria-describedby="confirmError"><button id="toggleConfirm" type="button" class="iz-eye" aria-label="Mostrar confirmação de senha" aria-pressed="false"><span class="material-symbols-outlined">visibility</span></button></div><p id="confirmError" class="iz-error" role="alert"></p></div>
-      <p id="authMessage" class="text-sm hidden" role="status" aria-live="polite"></p>
-      <button id="authSubmit" type="submit" class="w-full bg-primary text-on-primary-container rounded-xl py-3 font-bold disabled:opacity-60">Entrar</button>
-    </form>
-    <button id="toggleAuthMode" type="button" class="mt-5 text-sm text-primary hover:underline">Não tem conta? Cadastre-se</button>
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(() => {
-  'use strict';
-  const URL = 'https://owvwsokyyqmnjxskqpyn.supabase.co';
-  const KEY = 'sb_publishable_GYM8c1kxWG8OgTRnskccHA_KCFjT1Zi';
-  const $ = id => document.getElementById(id);
-  let client, mode = 'login', currentUser = null, currentNickname = null;
-  const modal = $('authModal');
-  const nicknamePattern = /^[A-Za-z0-9_]{3,24}$/;
-  const reserved = /^(admin|administrator|moderador|moderator|suporte|support|izgame|root|system)$/i;
-  const fields = { nickname:'authNickname',email:'authEmail',password:'authPassword',confirm:'authConfirm' };
-  function fieldError(name, text='') {
-    $(name+'Error').textContent = text;
-    $(fields[name]).setAttribute('aria-invalid', text ? 'true':'false');
-  }
-  function clearErrors(){ Object.keys(fields).forEach(k=>fieldError(k)); $('authMessage').classList.add('hidden'); }
-  function notice(text, error=false){const el=$('authMessage');el.textContent=text;el.className='text-sm '+(error?'text-error':'text-tertiary');}
-  function errorPT(err){
-    const code=(err?.code||'').toLowerCase(), msg=(err?.message||'').toLowerCase();
-    if(code.includes('email_not_confirmed')||msg.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
-    if(code.includes('invalid_credentials')||msg.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
-    if(code.includes('user_already_exists')||msg.includes('already registered')) return 'Este e-mail já está cadastrado. Tente entrar na sua conta.';
-    if(code.includes('email_address_invalid')||msg.includes('invalid email')) return 'Digite um endereço de e-mail válido.';
-    if(code.includes('over_email_send_rate_limit')||msg.includes('rate limit')) return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
-    if(code.includes('weak_password')||msg.includes('password')) return 'A senha não atende aos requisitos de segurança.';
-    if(code==='23505'||msg.includes('duplicate key')||msg.includes('already exists')) return 'Este nickname já está em uso. Escolha outro.';
-    if(msg.includes('database error saving new user')) return 'Não foi possível concluir o cadastro. Verifique o nickname ou tente novamente.';
-    return 'Não foi possível concluir a operação. Tente novamente em instantes.';
-  }
-  function openModal(next='login'){
-    mode=next; $('authForm').reset(); clearErrors();
-    $('nicknameGroup').classList.toggle('hidden',next==='login');
-    $('emailGroup').classList.toggle('hidden',next==='profile');
-    $('passwordGroup').classList.toggle('hidden',next==='profile');
-    $('confirmGroup').classList.toggle('hidden',next!=='signup');
-    $('authTitle').textContent=next==='signup'?'Criar conta no IZGAME':next==='profile'?'Escolha seu nickname':'Entrar no IZGAME';
-    $('authDescription').textContent=next==='signup'?'Escolha seu nickname, e-mail e senha.':next==='profile'?'Seu cadastro é antigo. Escolha um nickname público para seu perfil.':'Entre para participar da comunidade.';
-    $('authSubmit').textContent=next==='signup'?'Criar conta':next==='profile'?'Salvar nickname':'Entrar';
-    $('toggleAuthMode').classList.toggle('hidden',next==='profile');
-    $('toggleAuthMode').textContent=next==='signup'?'Já tem conta? Entrar':'Não tem conta? Cadastre-se';
-    $('authPassword').autocomplete=next==='signup'?'new-password':'current-password';
-    ['authPassword','authConfirm'].forEach(id=>{ $(id).type='password'; });
-    ['togglePassword','toggleConfirm'].forEach(id=>{ $(id).setAttribute('aria-pressed','false');$(id).setAttribute('aria-label',id==='togglePassword'?'Mostrar senha':'Mostrar confirmação de senha');$(id).firstElementChild.textContent='visibility'; });
-    modal.classList.remove('hidden');modal.classList.add('flex');
-    (next==='login'?$('authEmail'):$('authNickname')).focus();
-  }
-  function closeModal(){modal.classList.add('hidden');modal.classList.remove('flex');}
-  function toggleEye(inputId,buttonId){const input=$(inputId),button=$(buttonId),visible=input.type==='password';input.type=visible?'text':'password';button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',visible?'Ocultar senha':'Mostrar senha');button.firstElementChild.textContent=visible?'visibility_off':'visibility';}
-  $('togglePassword').onclick=()=>toggleEye('authPassword','togglePassword');
-  $('toggleConfirm').onclick=()=>toggleEye('authConfirm','toggleConfirm');
-  function validate(){
-    clearErrors();let valid=true;
-    const nick=$('authNickname').value.trim(),email=$('authEmail').value.trim(),pw=$('authPassword').value;
-    if(mode!=='login'){
-      if(!nicknamePattern.test(nick)){fieldError('nickname','Use de 3 a 24 caracteres: letras, números ou _.');valid=false;}
-      else if(reserved.test(nick)){fieldError('nickname','Este nickname é reservado. Escolha outro.');valid=false;}
-    }
-    if(mode!=='profile'){
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){fieldError('email','Digite um endereço de e-mail válido.');valid=false;}
-      if(!pw){fieldError('password','Digite sua senha.');valid=false;}
-      else if(mode==='signup'){
-        const missing=[];
-        if(pw.length<8)missing.push('pelo menos 8 caracteres');
-        if(!/[a-z]/.test(pw))missing.push('uma letra minúscula');
-        if(!/[A-Z]/.test(pw))missing.push('uma letra maiúscula');
-        if(!/[0-9]/.test(pw))missing.push('um número');
-        if(!/[^A-Za-z0-9]/.test(pw))missing.push('um símbolo');
-        if(missing.length){fieldError('password','A senha precisa conter '+missing.join(', ')+'.');valid=false;}
-        if($('authConfirm').value!==pw){fieldError('confirm','As senhas não coincidem.');valid=false;}
-      }
-    }
-    return valid;
-  }
-  Object.entries(fields).forEach(([name,id])=>$(id).addEventListener('blur',()=>{if($(id).value && $(name+'Error').textContent)validate();}));
-  async function loadProfile(user){
-    if(!user){currentNickname=null;return;}
-    const {data,error}=await client.from('profiles').select('username').eq('id',user.id).maybeSingle();
-    if(error){console.warn('Falha ao carregar perfil:',error.code);currentNickname=null;return;}
-    currentNickname=data?.username||null;
-    if(!currentNickname && user.user_metadata?.username) currentNickname=user.user_metadata.username;
-  }
-  function renderUser(){
-    $('authButton').textContent=currentUser?(currentNickname||'Definir nickname'):'Entrar';
-    $('authButton').title=currentUser?'Meu perfil':'Entrar ou cadastrar';
-    $('logoutButton').classList.toggle('hidden',!currentUser);
-  }
-  async function syncUser(user){
-    currentUser=user;
-    await loadProfile(user);
-    renderUser();
-    if(user && mode!=='profile') closeModal();
-  }
-  $('authButton').onclick=()=>{if(!client)return alert('Não foi possível carregar a conexão. Atualize a página.');if(currentUser){if(!currentNickname)openModal('profile');else alert('Você está conectado como '+currentNickname+'.');}else openModal('login');};
-  $('closeAuth').onclick=closeModal;
-  modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-  $('toggleAuthMode').onclick=()=>openModal(mode==='signup'?'login':'signup');
-  $('newDiscussionButton').onclick=()=>{if(!currentUser)openModal('login');else alert('Login confirmado! A criação de tópicos será adicionada na próxima etapa.');};
-  $('logoutButton').onclick=async()=>{if(!client)return;const {error}=await client.auth.signOut();if(error)alert(errorPT(error));else await syncUser(null);};
-  $('authForm').addEventListener('submit',async e=>{
-    e.preventDefault();if(!client)return notice('Conexão indisponível. Atualize a página.',true);
-    if(!validate())return;
-    const btn=$('authSubmit'), email=$('authEmail').value.trim(),password=$('authPassword').value,nick=$('authNickname').value.trim();
-    btn.disabled=true;btn.textContent='Aguarde...';
-    try{
-      if(mode==='signup'){
-        const {data:existing,error:lookupError}=await client.from('profiles').select('id').ilike('username',nick).limit(1);
-        if(lookupError)throw lookupError;
-        if(existing?.length){fieldError('nickname','Este nickname já está em uso. Escolha outro.');return;}
-        const {data,error}=await client.auth.signUp({email,password,options:{emailRedirectTo:'https://izgame.com.br/',data:{username:nick}}});
-        if(error)throw error;
-        if(data.session){await syncUser(data.user);}
-        else notice('Cadastro solicitado! Confira seu e-mail e confirme sua conta. Depois, entre no IZGAME.');
-      } else if(mode==='login'){
-        const {data,error}=await client.auth.signInWithPassword({email,password});
-        if(error)throw error;
-        await syncUser(data.user);
-      } else {
-        if(!currentUser)throw new Error('not authenticated');
-        const {data:existing,error:lookupError}=await client.from('profiles').select('id').ilike('username',nick).limit(1);
-        if(lookupError)throw lookupError;
-        if(existing?.some(p=>p.id!==currentUser.id)){fieldError('nickname','Este nickname já está em uso. Escolha outro.');return;}
-        const {error}=await client.from('profiles').upsert({id:currentUser.id,username:nick},{onConflict:'id'});
-        if(error)throw error;
-        currentNickname=nick;renderUser();closeModal();
-      }
-    }catch(err){const msg=errorPT(err);if(msg.includes('nickname'))fieldError('nickname',msg);else notice(msg,true);}
-    finally{btn.disabled=false;btn.textContent=mode==='signup'?'Criar conta':mode==='profile'?'Salvar nickname':'Entrar';}
-  });
-  if(window.supabase?.createClient){
-    client=window.supabase.createClient(URL,KEY);
-    client.auth.onAuthStateChange((_event,session)=>{
-      // Executar consultas assíncronas fora do callback de autenticação.
-      setTimeout(()=>syncUser(session?.user||null),0);
-    });
-    client.auth.getUser().then(({data})=>syncUser(data?.user||null)).catch(()=>renderUser());
-  } else console.error('Biblioteca Supabase não carregada.');
-})();
+(()=>{'use strict';const canvas=document.querySelector('#izgame-dots'),ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const touch=matchMedia('(pointer: coarse)').matches;let w=0,h=0,dpr=1,points=[],raf=0;const mouse={x:-9999,y:-9999,active:false};const gap=16,radius=145;function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);points=[];for(let y=12;y<h+gap;y+=gap)for(let x=12;x<w+gap;x+=gap)points.push({x,y});draw()}function draw(){ctx.clearRect(0,0,w,h);for(const p of points){let x=p.x,y=p.y,a=.21,r=1.0;if(mouse.active&&!reduce&&!touch){const dx=x-mouse.x,dy=y-mouse.y,dist=Math.hypot(dx,dy);if(dist<radius){const t=(1-dist/radius)**2;x+=dx/(dist||1)*t*12;y+=dy/(dist||1)*t*12;a+=t*.56;r+=t*.65}}ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=`rgba(173,184,199,${a})`;ctx.fill()}}function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;draw()})}window.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;schedule()},{passive:true});document.addEventListener('pointerleave',()=>{mouse.active=false;schedule()});window.addEventListener('resize',resize,{passive:true});resize()})();
 </script>
-</body></html>
+</body>
+</html>
