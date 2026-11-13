@@ -182,11 +182,42 @@ const initial={balance:4000,earned:6200,reserved:2000,redeems:1,months:9,referra
  resize();if(!reduced)animate();
 })();
 </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>
-(async()=>{
- const url='https://huowmpaxgoeyqftrdjzf.supabase.co';
- const key='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
- if(!url.startsWith('https://') || !key.startsWith('sb_publishable_') || !window.supabase?.createClient){location.replace('index.html?login=1&next=rewards-dashboard.html');return;}
- try{const client=window.supabase.createClient(url,key);const last=Number(localStorage.getItem('izgame_last_activity')||0);if(last&&Date.now()-last>48*60*60*1000){await client.auth.signOut();localStorage.removeItem('izgame_last_activity');location.replace('index.html?login=1&next=rewards-dashboard.html');return;}const {data,error}=await client.auth.getUser();if(error||!data?.user){location.replace('index.html?login=1&next=rewards-dashboard.html');return;}if(!last)localStorage.setItem('izgame_last_activity',String(Date.now()));document.body.classList.add('auth-ready');}
- catch{location.replace('index.html?login=1&next=rewards-dashboard.html');}
+(async () => {
+  const url = 'https://huowmpaxgoeyqftrdjzf.supabase.co';
+  const key = 'sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
+  const loginUrl = 'index.html?login=1&next=rewards-dashboard.html';
+  const showError = (text) => {
+    document.body.classList.add('auth-ready');
+    document.querySelector('main').innerHTML = `<section class="card" role="alert"><h1>Não foi possível verificar a sessão</h1><p id="auth-error"></p><div class="actions"><button class="btn" onclick="location.reload()">Tentar novamente</button><a class="btn secondary" href="index.html">Voltar ao início</a></div></section>`;
+    document.getElementById('auth-error').textContent = text;
+  };
+  if (!window.supabase?.createClient) {
+    showError('A biblioteca de autenticação não carregou. Verifique a conexão e tente novamente.');
+    return;
+  }
+  try {
+    const client = window.supabase.createClient(url, key, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true,
+        storageKey: 'sb-huowmpaxgoeyqftrdjzf-auth-token' }
+    });
+    const {data: sessionData, error: sessionError} = await client.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!sessionData?.session) { location.replace(loginUrl); return; }
+    const last = Number(localStorage.getItem('izgame_last_activity') || 0);
+    if (last && Date.now() - last > 48 * 60 * 60 * 1000) {
+      await client.auth.signOut();
+      localStorage.removeItem('izgame_last_activity');
+      location.replace(loginUrl);
+      return;
+    }
+    const {data, error} = await client.auth.getUser();
+    if (error) throw error;
+    if (!data?.user) { location.replace(loginUrl); return; }
+    localStorage.setItem('izgame_last_activity', String(Date.now()));
+    document.body.classList.add('auth-ready');
+  } catch (error) {
+    console.error('IZGAME Rewards: falha na verificação da sessão', error);
+    showError('Sua sessão não pôde ser validada agora. Tente novamente; não é necessário digitar a senha até confirmarmos que a sessão expirou.');
+  }
 })();
 </script></body></html>
