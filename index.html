@@ -387,14 +387,21 @@
 </footer>
 
 <!-- Autenticação IZGAME -->
+<style>
+  .iz-field{display:block;font-size:.875rem}.iz-input{margin-top:.4rem;width:100%;border-radius:.65rem;background:#0c0e12;border:1px solid #46484d;padding:.8rem;color:#f6f6fc}
+  .iz-input:focus{outline:2px solid #77b0ff;outline-offset:1px}.iz-input[aria-invalid="true"]{border-color:#ff716c}
+  .iz-error{font-size:.75rem;color:#ff8d88;margin-top:.3rem;min-height:0}.iz-eye{position:absolute;right:.5rem;top:50%;transform:translateY(-40%);padding:.4rem;color:#bcd2fe}
+</style>
 <div id="authModal" class="hidden fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-  <div class="relative w-full max-w-md rounded-2xl border border-primary/20 bg-surface-container p-7 shadow-2xl">
+  <div class="relative w-full max-w-md max-h-[95vh] overflow-y-auto rounded-2xl border border-primary/20 bg-surface-container p-7 shadow-2xl">
     <button id="closeAuth" type="button" aria-label="Fechar" class="absolute right-5 top-4 text-on-surface-variant hover:text-white text-2xl">×</button>
     <h2 id="authTitle" class="font-headline text-2xl font-bold text-primary mb-2">Entrar no IZGAME</h2>
     <p id="authDescription" class="text-sm text-on-surface-variant mb-6">Entre para participar da comunidade.</p>
-    <form id="authForm" class="space-y-4">
-      <label class="block text-sm">E-mail<input id="authEmail" type="email" autocomplete="email" required maxlength="254" class="mt-2 w-full rounded-lg bg-background border border-outline-variant/50 p-3 text-on-surface" placeholder="seu@email.com"></label>
-      <label class="block text-sm">Senha<input id="authPassword" type="password" autocomplete="current-password" required minlength="8" class="mt-2 w-full rounded-lg bg-background border border-outline-variant/50 p-3 text-on-surface" placeholder="Sua senha"></label>
+    <form id="authForm" class="space-y-4" novalidate>
+      <div id="nicknameGroup" class="hidden"><label class="iz-field" for="authNickname">Nome de usuário / Nickname</label><input id="authNickname" class="iz-input" type="text" autocomplete="username" maxlength="24" placeholder="Ex.: PokerMaster" aria-describedby="nicknameError"><p id="nicknameError" class="iz-error" role="alert"></p></div>
+      <div id="emailGroup"><label class="iz-field" for="authEmail">E-mail</label><input id="authEmail" class="iz-input" type="email" autocomplete="email" maxlength="254" placeholder="seu@email.com" aria-describedby="emailError"><p id="emailError" class="iz-error" role="alert"></p></div>
+      <div id="passwordGroup"><label class="iz-field" for="authPassword">Senha</label><div class="relative"><input id="authPassword" class="iz-input pr-12" type="password" autocomplete="current-password" placeholder="Sua senha" aria-describedby="passwordError"><button id="togglePassword" type="button" class="iz-eye" aria-label="Mostrar senha" aria-pressed="false"><span class="material-symbols-outlined">visibility</span></button></div><p id="passwordError" class="iz-error" role="alert"></p></div>
+      <div id="confirmGroup" class="hidden"><label class="iz-field" for="authConfirm">Confirmar senha</label><div class="relative"><input id="authConfirm" class="iz-input pr-12" type="password" autocomplete="new-password" placeholder="Repita sua senha" aria-describedby="confirmError"><button id="toggleConfirm" type="button" class="iz-eye" aria-label="Mostrar confirmação de senha" aria-pressed="false"><span class="material-symbols-outlined">visibility</span></button></div><p id="confirmError" class="iz-error" role="alert"></p></div>
       <p id="authMessage" class="text-sm hidden" role="status" aria-live="polite"></p>
       <button id="authSubmit" type="submit" class="w-full bg-primary text-on-primary-container rounded-xl py-3 font-bold disabled:opacity-60">Entrar</button>
     </form>
@@ -407,86 +414,138 @@
   'use strict';
   const URL = 'https://owvwsokyyqmnjxskqpyn.supabase.co';
   const KEY = 'sb_publishable_GYM8c1kxWG8OgTRnskccHA_KCFjT1Zi';
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
+  let client, mode = 'login', currentUser = null, currentNickname = null;
   const modal = $('authModal');
-  const message = $('authMessage');
-  let signupMode = false;
-  let client;
-  function notify(text, error = false) {
-    message.textContent = text;
-    message.classList.remove('hidden', 'text-error', 'text-tertiary');
-    message.classList.add(error ? 'text-error' : 'text-tertiary');
+  const nicknamePattern = /^[A-Za-z0-9_]{3,24}$/;
+  const reserved = /^(admin|administrator|moderador|moderator|suporte|support|izgame|root|system)$/i;
+  const fields = { nickname:'authNickname',email:'authEmail',password:'authPassword',confirm:'authConfirm' };
+  function fieldError(name, text='') {
+    $(name+'Error').textContent = text;
+    $(fields[name]).setAttribute('aria-invalid', text ? 'true':'false');
   }
-  function openModal(signup = false) {
-    signupMode = signup;
-    $('authForm').reset();
-    message.classList.add('hidden');
-    $('authTitle').textContent = signup ? 'Criar conta no IZGAME' : 'Entrar no IZGAME';
-    $('authDescription').textContent = signup ? 'Cadastre-se com seu e-mail e senha.' : 'Entre para participar da comunidade.';
-    $('authSubmit').textContent = signup ? 'Criar conta' : 'Entrar';
-    $('toggleAuthMode').textContent = signup ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastre-se';
-    $('authPassword').setAttribute('autocomplete', signup ? 'new-password' : 'current-password');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    $('authEmail').focus();
+  function clearErrors(){ Object.keys(fields).forEach(k=>fieldError(k)); $('authMessage').classList.add('hidden'); }
+  function notice(text, error=false){const el=$('authMessage');el.textContent=text;el.className='text-sm '+(error?'text-error':'text-tertiary');}
+  function errorPT(err){
+    const code=(err?.code||'').toLowerCase(), msg=(err?.message||'').toLowerCase();
+    if(code.includes('email_not_confirmed')||msg.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+    if(code.includes('invalid_credentials')||msg.includes('invalid login credentials')) return 'E-mail ou senha incorretos.';
+    if(code.includes('user_already_exists')||msg.includes('already registered')) return 'Este e-mail já está cadastrado. Tente entrar na sua conta.';
+    if(code.includes('email_address_invalid')||msg.includes('invalid email')) return 'Digite um endereço de e-mail válido.';
+    if(code.includes('over_email_send_rate_limit')||msg.includes('rate limit')) return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+    if(code.includes('weak_password')||msg.includes('password')) return 'A senha não atende aos requisitos de segurança.';
+    if(code==='23505'||msg.includes('duplicate key')||msg.includes('already exists')) return 'Este nickname já está em uso. Escolha outro.';
+    if(msg.includes('database error saving new user')) return 'Não foi possível concluir o cadastro. Verifique o nickname ou tente novamente.';
+    return 'Não foi possível concluir a operação. Tente novamente em instantes.';
   }
-  function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-  function renderUser(user) {
-    $('authButton').textContent = user ? (user.email || 'Minha conta') : 'Entrar';
-    $('authButton').title = user ? 'Conta conectada' : 'Entrar ou cadastrar';
-    $('logoutButton').classList.toggle('hidden', !user);
-    if (user) closeModal();
+  function openModal(next='login'){
+    mode=next; $('authForm').reset(); clearErrors();
+    $('nicknameGroup').classList.toggle('hidden',next==='login');
+    $('emailGroup').classList.toggle('hidden',next==='profile');
+    $('passwordGroup').classList.toggle('hidden',next==='profile');
+    $('confirmGroup').classList.toggle('hidden',next!=='signup');
+    $('authTitle').textContent=next==='signup'?'Criar conta no IZGAME':next==='profile'?'Escolha seu nickname':'Entrar no IZGAME';
+    $('authDescription').textContent=next==='signup'?'Escolha seu nickname, e-mail e senha.':next==='profile'?'Seu cadastro é antigo. Escolha um nickname público para seu perfil.':'Entre para participar da comunidade.';
+    $('authSubmit').textContent=next==='signup'?'Criar conta':next==='profile'?'Salvar nickname':'Entrar';
+    $('toggleAuthMode').classList.toggle('hidden',next==='profile');
+    $('toggleAuthMode').textContent=next==='signup'?'Já tem conta? Entrar':'Não tem conta? Cadastre-se';
+    $('authPassword').autocomplete=next==='signup'?'new-password':'current-password';
+    ['authPassword','authConfirm'].forEach(id=>{ $(id).type='password'; });
+    ['togglePassword','toggleConfirm'].forEach(id=>{ $(id).setAttribute('aria-pressed','false');$(id).setAttribute('aria-label',id==='togglePassword'?'Mostrar senha':'Mostrar confirmação de senha');$(id).firstElementChild.textContent='visibility'; });
+    modal.classList.remove('hidden');modal.classList.add('flex');
+    (next==='login'?$('authEmail'):$('authNickname')).focus();
   }
-  $('authButton').addEventListener('click', async () => {
-    if (!client) return alert('Não foi possível carregar a conexão com o Supabase. Atualize a página.');
-    const { data } = await client.auth.getUser();
-    if (data?.user) return alert('Você está conectado como ' + data.user.email);
-    openModal();
-  });
-  $('closeAuth').addEventListener('click', closeModal);
-  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  $('toggleAuthMode').addEventListener('click', () => openModal(!signupMode));
-  $('newDiscussionButton').addEventListener('click', async () => {
-    if (!client) return alert('Conexão indisponível.');
-    const { data } = await client.auth.getUser();
-    if (!data?.user) return openModal();
-    alert('Login confirmado! A criação de tópicos será adicionada na próxima etapa.');
-  });
-  $('logoutButton').addEventListener('click', async () => {
-    if (!client) return;
-    const { error } = await client.auth.signOut();
-    if (error) alert('Não foi possível sair: ' + error.message);
-  });
-  $('authForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!client) return notify('Conexão com Supabase indisponível.', true);
-    const email = $('authEmail').value.trim();
-    const password = $('authPassword').value;
-    const btn = $('authSubmit');
-    btn.disabled = true;
-    btn.textContent = 'Aguarde...';
-    message.classList.add('hidden');
-    try {
-      if (signupMode) {
-        const { data, error } = await client.auth.signUp({ email, password, options: { emailRedirectTo: 'https://izgame.com.br/' } });
-        if (error) throw error;
-        if (data.session) { renderUser(data.user); }
-        else notify('Cadastro solicitado! Confira seu e-mail e confirme a conta antes de entrar.');
-      } else {
-        const { data, error } = await client.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        renderUser(data.user);
+  function closeModal(){modal.classList.add('hidden');modal.classList.remove('flex');}
+  function toggleEye(inputId,buttonId){const input=$(inputId),button=$(buttonId),visible=input.type==='password';input.type=visible?'text':'password';button.setAttribute('aria-pressed',String(visible));button.setAttribute('aria-label',visible?'Ocultar senha':'Mostrar senha');button.firstElementChild.textContent=visible?'visibility_off':'visibility';}
+  $('togglePassword').onclick=()=>toggleEye('authPassword','togglePassword');
+  $('toggleConfirm').onclick=()=>toggleEye('authConfirm','toggleConfirm');
+  function validate(){
+    clearErrors();let valid=true;
+    const nick=$('authNickname').value.trim(),email=$('authEmail').value.trim(),pw=$('authPassword').value;
+    if(mode!=='login'){
+      if(!nicknamePattern.test(nick)){fieldError('nickname','Use de 3 a 24 caracteres: letras, números ou _.');valid=false;}
+      else if(reserved.test(nick)){fieldError('nickname','Este nickname é reservado. Escolha outro.');valid=false;}
+    }
+    if(mode!=='profile'){
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){fieldError('email','Digite um endereço de e-mail válido.');valid=false;}
+      if(!pw){fieldError('password','Digite sua senha.');valid=false;}
+      else if(mode==='signup'){
+        const missing=[];
+        if(pw.length<8)missing.push('pelo menos 8 caracteres');
+        if(!/[a-z]/.test(pw))missing.push('uma letra minúscula');
+        if(!/[A-Z]/.test(pw))missing.push('uma letra maiúscula');
+        if(!/[0-9]/.test(pw))missing.push('um número');
+        if(!/[^A-Za-z0-9]/.test(pw))missing.push('um símbolo');
+        if(missing.length){fieldError('password','A senha precisa conter '+missing.join(', ')+'.');valid=false;}
+        if($('authConfirm').value!==pw){fieldError('confirm','As senhas não coincidem.');valid=false;}
       }
-    } catch (err) { notify(err.message || 'Não foi possível autenticar.', true); }
-    finally { btn.disabled = false; btn.textContent = signupMode ? 'Criar conta' : 'Entrar'; }
-  });
-  if (window.supabase?.createClient) {
-    client = window.supabase.createClient(URL, KEY);
-    client.auth.onAuthStateChange((_event, session) => renderUser(session?.user || null));
-  } else {
-    console.error('Biblioteca Supabase não carregada.');
+    }
+    return valid;
   }
+  Object.entries(fields).forEach(([name,id])=>$(id).addEventListener('blur',()=>{if($(id).value && $(name+'Error').textContent)validate();}));
+  async function loadProfile(user){
+    if(!user){currentNickname=null;return;}
+    const {data,error}=await client.from('profiles').select('username').eq('id',user.id).maybeSingle();
+    if(error){console.warn('Falha ao carregar perfil:',error.code);currentNickname=null;return;}
+    currentNickname=data?.username||null;
+    if(!currentNickname && user.user_metadata?.username) currentNickname=user.user_metadata.username;
+  }
+  function renderUser(){
+    $('authButton').textContent=currentUser?(currentNickname||'Definir nickname'):'Entrar';
+    $('authButton').title=currentUser?'Meu perfil':'Entrar ou cadastrar';
+    $('logoutButton').classList.toggle('hidden',!currentUser);
+  }
+  async function syncUser(user){
+    currentUser=user;
+    await loadProfile(user);
+    renderUser();
+    if(user && mode!=='profile') closeModal();
+  }
+  $('authButton').onclick=()=>{if(!client)return alert('Não foi possível carregar a conexão. Atualize a página.');if(currentUser){if(!currentNickname)openModal('profile');else alert('Você está conectado como '+currentNickname+'.');}else openModal('login');};
+  $('closeAuth').onclick=closeModal;
+  modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+  $('toggleAuthMode').onclick=()=>openModal(mode==='signup'?'login':'signup');
+  $('newDiscussionButton').onclick=()=>{if(!currentUser)openModal('login');else alert('Login confirmado! A criação de tópicos será adicionada na próxima etapa.');};
+  $('logoutButton').onclick=async()=>{if(!client)return;const {error}=await client.auth.signOut();if(error)alert(errorPT(error));else await syncUser(null);};
+  $('authForm').addEventListener('submit',async e=>{
+    e.preventDefault();if(!client)return notice('Conexão indisponível. Atualize a página.',true);
+    if(!validate())return;
+    const btn=$('authSubmit'), email=$('authEmail').value.trim(),password=$('authPassword').value,nick=$('authNickname').value.trim();
+    btn.disabled=true;btn.textContent='Aguarde...';
+    try{
+      if(mode==='signup'){
+        const {data:existing,error:lookupError}=await client.from('profiles').select('id').ilike('username',nick).limit(1);
+        if(lookupError)throw lookupError;
+        if(existing?.length){fieldError('nickname','Este nickname já está em uso. Escolha outro.');return;}
+        const {data,error}=await client.auth.signUp({email,password,options:{emailRedirectTo:'https://izgame.com.br/',data:{username:nick}}});
+        if(error)throw error;
+        if(data.session){await syncUser(data.user);}
+        else notice('Cadastro solicitado! Confira seu e-mail e confirme sua conta. Depois, entre no IZGAME.');
+      } else if(mode==='login'){
+        const {data,error}=await client.auth.signInWithPassword({email,password});
+        if(error)throw error;
+        await syncUser(data.user);
+      } else {
+        if(!currentUser)throw new Error('not authenticated');
+        const {data:existing,error:lookupError}=await client.from('profiles').select('id').ilike('username',nick).limit(1);
+        if(lookupError)throw lookupError;
+        if(existing?.some(p=>p.id!==currentUser.id)){fieldError('nickname','Este nickname já está em uso. Escolha outro.');return;}
+        const {error}=await client.from('profiles').upsert({id:currentUser.id,username:nick},{onConflict:'id'});
+        if(error)throw error;
+        currentNickname=nick;renderUser();closeModal();
+      }
+    }catch(err){const msg=errorPT(err);if(msg.includes('nickname'))fieldError('nickname',msg);else notice(msg,true);}
+    finally{btn.disabled=false;btn.textContent=mode==='signup'?'Criar conta':mode==='profile'?'Salvar nickname':'Entrar';}
+  });
+  if(window.supabase?.createClient){
+    client=window.supabase.createClient(URL,KEY);
+    client.auth.onAuthStateChange((_event,session)=>{
+      // Executar consultas assíncronas fora do callback de autenticação.
+      setTimeout(()=>syncUser(session?.user||null),0);
+    });
+    client.auth.getUser().then(({data})=>syncUser(data?.user||null)).catch(()=>renderUser());
+  } else console.error('Biblioteca Supabase não carregada.');
 })();
 </script>
 </body></html>
