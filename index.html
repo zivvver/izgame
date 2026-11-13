@@ -971,6 +971,9 @@ body.auth-open{overflow:hidden}
   };
   const open=()=>{lastFocus=document.activeElement;overlay.classList.add('open');document.body.classList.add('auth-open');setMode('login');email.focus()};
   const hide=()=>{overlay.classList.remove('open');document.body.classList.remove('auth-open');lastFocus?.focus()};
+  const loginParams=new URLSearchParams(location.search);
+  const loginNext=loginParams.get('next')==='rewards-dashboard.html'?'rewards-dashboard.html':null;
+  if(loginParams.get('login')==='1')window.addEventListener('load',open,{once:true});
   trigger.addEventListener('click',async()=>{
     if(client){const {data}=await client.auth.getUser();if(data?.user){const {error}=await client.auth.signOut();if(error){open();message(error.message,true)}else{trigger.textContent='Entrar'}return}}
     open();
@@ -987,10 +990,10 @@ body.auth-open{overflow:hidden}
       if(mode==='register'){
         const {data,error}=await client.auth.signUp({email:email.value.trim(),password:password.value,options:{data:{username:nameInput.value.trim()}}});
         if(error)throw error;
-        if(data.session){hide()}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
+        if(data.session){hide();if(loginNext)location.href=loginNext}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
       }else{
         const {error}=await client.auth.signInWithPassword({email:email.value.trim(),password:password.value});
-        if(error)throw error;hide();
+        if(error)throw error;hide();if(loginNext)location.href=loginNext;
       }
     }catch(err){message(err.message||'Não foi possível autenticar.',true)}
     finally{submit.disabled=false;submit.textContent=mode==='register'?'Criar conta':'Entrar'}
