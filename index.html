@@ -974,6 +974,26 @@ body.auth-open{overflow:hidden}
   const loginParams=new URLSearchParams(location.search);
   const loginNext=loginParams.get('next')==='rewards-dashboard.html'?'rewards-dashboard.html':null;
   if(loginParams.get('login')==='1')window.addEventListener('load',open,{once:true});
+  // Rewards: visitantes veem a explicação; usuários autenticados acessam a dashboard.
+  document.querySelectorAll('a[href="#rewards"]').forEach(link=>{
+    link.addEventListener('click',async event=>{
+      if(!client)return; // Sem Supabase, mantém a navegação para a seção pública.
+      event.preventDefault();
+      try{
+        await checkExpiry();
+        const {data,error}=await client.auth.getUser();
+        if(error)throw error;
+        if(data?.user){
+          location.href='rewards-dashboard.html';
+        }else{
+          document.getElementById('rewards')?.scrollIntoView({behavior:'smooth'});
+        }
+      }catch(error){
+        console.warn('IZGAME: não foi possível verificar o login para Rewards.',error);
+        document.getElementById('rewards')?.scrollIntoView({behavior:'smooth'});
+      }
+    });
+  });
   trigger.addEventListener('click',async()=>{
     if(client){await checkExpiry();const {data}=await client.auth.getUser();if(data?.user){const {error}=await client.auth.signOut();if(error){open();message(error.message,true)}else{trigger.textContent='Entrar';localStorage.removeItem(LAST)}return}}
     open();
