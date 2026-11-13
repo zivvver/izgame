@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>izgame - The Neon Vault</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Manrope:wght@400;500&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#00485d",
+                    "tertiary-fixed": "#70d6ff",
+                    "primary": "#77b0ff",
+                    "surface-variant": "#23262c",
+                    "surface-container-low": "#111318",
+                    "on-error-container": "#ffa8a3",
+                    "tertiary-dim": "#60c8f0",
+                    "secondary-fixed-dim": "#aec4ef",
+                    "error-dim": "#d7383b",
+                    "tertiary-container": "#70d6ff",
+                    "secondary-container": "#31476b",
+                    "secondary-dim": "#aec4ef",
+                    "on-secondary-fixed": "#1e3457",
+                    "on-secondary": "#32486c",
+                    "surface-container-high": "#1d2025",
+                    "error-container": "#9f0519",
+                    "primary-container": "#5aa2ff",
+                    "surface-tint": "#77b0ff",
+                    "on-surface-variant": "#aaabb0",
+                    "primary-fixed-dim": "#3295ff",
+                    "secondary-fixed": "#bcd2fe",
+                    "on-tertiary-fixed-variant": "#005269",
+                    "tertiary-fixed-dim": "#60c8f0",
+                    "error": "#ff716c",
+                    "on-surface": "#f6f6fc",
+                    "on-secondary-fixed-variant": "#3b5176",
+                    "secondary": "#bcd2fe",
+                    "surface-container": "#171a1f",
+                    "background": "#0c0e12",
+                    "primary-dim": "#53a0ff",
+                    "on-primary-fixed-variant": "#002c57",
+                    "on-primary-fixed": "#000000",
+                    "on-background": "#f6f6fc",
+                    "on-secondary-container": "#bbd1fc",
+                    "outline-variant": "#46484d",
+                    "surface-container-highest": "#23262c",
+                    "inverse-on-surface": "#53555a",
+                    "surface-container-lowest": "#000000",
+                    "on-primary-container": "#002347",
+                    "surface-dim": "#0c0e12",
+                    "outline": "#74757a",
+                    "on-tertiary": "#005269",
+                    "inverse-primary": "#005fb0",
+                    "surface": "#0c0e12",
+                    "on-primary": "#002f5b",
+                    "tertiary": "#9de1ff",
+                    "on-error": "#490006",
+                    "primary-fixed": "#5aa2ff",
+                    "surface-bright": "#292c33",
+                    "on-tertiary-fixed": "#003342",
+                    "inverse-surface": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Space Grotesk"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0c0e12;
+            color: #f6f6fc;
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-nav {
+            background: rgba(12, 14, 18, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .neon-glow {
+            filter: drop-shadow(0 0 8px rgba(119, 176, 255, 0.3));
+        }
+        .status-pulse {
+            position: relative;
+        }
+        .status-pulse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: #9de1ff;
+            border-radius: 50%;
+            z-index: -1;
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background selection:bg-primary/30">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 glass-nav border-b border-primary/10">
+<div class="flex justify-between items-center px-8 h-20 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-12">
+<span class="text-2xl font-bold tracking-tighter text-primary neon-glow font-headline">izgame</span>
+<nav class="hidden lg:flex items-center gap-8 font-headline font-semibold tracking-tight">
+<a class="text-primary border-b-2 border-primary pb-1" href="#">Notícias</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Blogs</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Avaliações</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">Fórum</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button id="authButton" type="button" class="bg-gradient-to-r from-primary to-primary-container text-on-primary-container px-6 py-2.5 rounded-xl font-headline font-bold transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-primary/20">Entrar</button><button id="logoutButton" type="button" class="hidden px-3 py-2 text-sm border border-outline-variant rounded-xl">Sair</button>
+</div>
+</div>
+</header>
+<main class="pt-24 min-h-screen max-w-[1440px] mx-auto flex gap-6 px-8">
+<!-- SideNavBar - Centered Alignment Style from SCREEN_31 -->
+<aside class="hidden lg:flex flex-col gap-2 p-6 h-screen w-64 bg-surface-container-low sticky top-24 rounded-2xl border border-primary/5">
+<div class="mb-6">
+<h3 class="text-primary font-bold font-headline text-lg">Navegação</h3>
+<p class="text-on-surface-variant text-xs uppercase tracking-widest">Explore o Santuário</p>
+</div>
+<nav class="flex flex-col gap-1 font-label font-medium text-sm">
+<a class="flex items-center gap-3 p-3 rounded-xl text-primary font-bold border-r-4 border-primary bg-primary/10 hover:translate-x-1 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-medium text-base">Home</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span class="font-medium text-base">Torneios</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-medium text-base">Estratégia</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+<span class="font-medium text-base">Mãos do Dia</span>
+</a>
+<a class="flex items-center gap-3 p-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-medium text-base">Ranking</span>
+</a>
+</nav>
+<div class="mt-8 pt-8 border-t border-outline-variant/10">
+<a class="px-4 py-2 flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors text-xs font-label uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span> Configurações
+                </a>
+<a class="px-4 py-2 flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors text-xs font-label uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help_outline">help_outline</span> Suporte
+                </a>
+</div>
+<button id="newDiscussionButton" class="mt-auto bg-gradient-to-r from-primary to-primary-container text-on-primary-container py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:brightness-105 transition-all">
+                Nova Discussão
+            </button>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col gap-8 pb-20">
+<!-- Hero Section -->
+<section class="relative h-[440px] rounded-2xl overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Cinematic wide shot of a high-stakes poker tournament arena with neon blue lighting and professional players focused around a dark felt table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkP_aB12bfjCeQMOWBGJBJMVS2FTPwFeLZoUOn0GaYwlUTTaYX9xKCYV-d-4ld5081GwBMb8TLzc9widhNq8g7F7HQCLQZdH6c9FzhgNPLYf9EtKKMTV9iIA3gw8kkGW1WNAhZ8myh1gf5g2N81ZvRKHmGTtKz-uZCJqW16E0eec-YOk3DFawezzVWh6_zULYDeD3hFDsEsWC7U_YTkAkh5cK86dcu20uLbe35j-gY03rvV24T4uGMyiCVjIvHHBmnBK5PIwKt-qw')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-10 max-w-2xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary text-on-primary-container px-3 py-1 rounded-full text-xs font-label font-bold uppercase tracking-widest">Destaque</span>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary status-pulse"></div>
+<span class="text-tertiary font-label text-xs uppercase tracking-widest">Live: Dia 4</span>
+</div>
+</div>
+<h1 class="text-5xl font-headline font-bold text-on-surface mb-4 leading-tight">WSOP Main Event: <br/><span class="text-primary neon-glow">O Caminho para a Glória</span></h1>
+<p class="text-on-surface-variant text-lg font-body mb-8">Acompanhe a cobertura em tempo real da mesa final. Análises técnicas, estatísticas dos jogadores e as mãos que definiram o torneio.</p>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary-container px-8 py-3 rounded-xl font-headline font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/30">Ver Cobertura</button>
+<button class="bg-surface-container-high/60 backdrop-blur-md border border-outline-variant/30 text-on-surface px-8 py-3 rounded-xl font-headline font-bold transition-all hover:scale-[1.02] active:scale-95">Ver Estatísticas</button>
+</div>
+</div>
+</section>
+<!-- Live Discussion Section -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="text-2xl font-bold text-on-surface font-headline">Discussão ao Vivo</h2>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full bg-surface-container-highest text-primary text-xs font-bold font-label transition-colors">Recentes</button>
+<button class="px-4 py-1.5 rounded-full text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface text-xs font-bold font-label transition-all cursor-pointer">Populares</button>
+</div>
+</div>
+<!-- Feed Items -->
+<div class="space-y-4">
+<!-- Feed Item 1 -->
+<article class="bg-surface-container-low p-6 rounded-2xl transition-all hover:bg-surface-container-high border border-primary/5 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center"></div>
+<div class="flex gap-6">
+<div class="flex flex-col items-center gap-1 min-w-[44px]">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="keyboard_arrow_up">keyboard_arrow_up</button>
+<span class="text-sm font-bold text-on-surface">142</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</button>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-3">
+<img alt="Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxdXUCTwoCB7DS36KYKbdQx1A6ava9XS6O7SPskBSOn4JiYNZcX-qf-SkYcoyeTsxttLJVDG1MYtQj6qPtCUDnWRJAFVM_7MhZGCuYr03LHphCpn_KF8wj7n-jwClBAh89sUl4tZ5-YP0MpolOG-EwnKsgJ_WBUYrEKtt3I65DIQpOrGJJ66SBkZJZTmEsfEjp7GX-5EE41CHZw445D0IpRY0SiVQx9ogXa0f3aTZZCw8-tfpiA5S8hpONDDXtz5PDfpL8750Ey4c"/>
+<span class="text-on-surface-variant font-label text-xs uppercase tracking-wider">u/shark_hunter • 2h atrás</span>
+<span class="ml-auto bg-secondary-container/30 text-secondary px-3 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-widest">Estratégia</span>
+</div>
+<h3 class="text-xl font-headline font-semibold text-on-surface mb-3 group-hover:text-primary transition-colors">Análise: Quando aplicar o 'Donk Lead' em potes multi-way?</h3>
+<p class="text-on-surface-variant font-body text-sm line-clamp-2">Recentemente tenho notado que jogadores experientes estão utilizando o donk lead com ranges mais amplos no flop. Vamos discutir a matemática por trás dessa jogada...</p>
+<div class="flex items-center gap-6 mt-5">
+<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-lg" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<span class="text-xs font-label">58 Comentários</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-lg" data-icon="share">share</span>
+<span class="text-xs font-label">Compartilhar</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- Feed Item 2 -->
+<article class="bg-surface-container-low p-6 rounded-2xl transition-all hover:bg-surface-container-high border border-primary/5 relative overflow-hidden group">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center"></div>
+<div class="flex gap-6">
+<div class="flex flex-col items-center gap-1 min-w-[44px]">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="keyboard_arrow_up">keyboard_arrow_up</button>
+<span class="text-sm font-bold text-on-surface">89</span>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</button>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-3">
+<img alt="Avatar" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_91XRXn-0eDnN5_Je8XYLWw328kItSmsYIQz1OUqLFrMigKswfP23KJnczOVx0es7nIUnQWLPQ6PhbMtrw9s07UF02Z6GUdVKmTjm1XVsKsX4tmS9JQYBDa52Oz-efLfuprjPoQS3vUyLQHBK8FgXC-aEKwlAM3IK8h5iqfEGa87AWr7UOSo8cnNwM6eQ8Nj9gI7O4PS_999R1j1uyIHG3K5QIltSwJLLA8kOaEKTHYZH98u_dQui4RPYp0qz04eqg_0l96rm2Vg"/>
+<span class="text-on-surface-variant font-label text-xs uppercase tracking-wider">u/poker_queen • 5h atrás</span>
+<span class="ml-auto bg-tertiary-container/10 text-tertiary px-3 py-0.5 rounded-full text-[10px] font-label font-bold uppercase tracking-widest">Torneios</span>
+</div>
+<h3 class="text-xl font-headline font-semibold text-on-surface mb-3 group-hover:text-primary transition-colors">Bad Beat no Mystery Bounty da GG: Justo ou Variância?</h3>
+<p class="text-on-surface-variant font-body text-sm line-clamp-2">O que aconteceu nessa mão foi inacreditável. AA vs 72o pré-flop e o cara acerta runner-runner flush. Como lidar com o mental após isso?</p>
+<div class="flex items-center gap-6 mt-5">
+<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-lg" data-icon="chat_bubble_outline">chat_bubble_outline</span>
+<span class="text-xs font-label">124 Comentários</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-lg" data-icon="bookmark">bookmark</span>
+<span class="text-xs font-label">Salvar</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</div>
+</div>
+<!-- Right SideBar - Centered Alignment Style from SCREEN_31 -->
+<aside class="hidden xl:flex flex-col gap-6 w-80 sticky top-24 h-fit">
+<!-- Odds Section -->
+<div class="bg-surface-container-low p-6 rounded-2xl border border-primary/5">
+<h4 class="text-on-surface font-headline font-bold mb-5 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span> 
+                    Melhores Odds de Apostas
+                </h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center p-4 bg-surface-container-high rounded-xl border-l-4 border-primary">
+<div>
+<p class="text-[10px] text-on-surface-variant font-label uppercase tracking-widest">Premier League</p>
+<p class="text-sm font-bold text-on-surface">Arsenal vs Man City</p>
+</div>
+<span class="text-primary font-black text-sm">2.45 | 3.10</span>
+</div>
+<div class="flex justify-between items-center p-4 bg-surface-container-high rounded-xl">
+<div>
+<p class="text-[10px] text-on-surface-variant font-label uppercase tracking-widest">NBA Regular</p>
+<p class="text-sm font-bold text-on-surface">Lakers vs Warriors</p>
+</div>
+<span class="text-primary font-black text-sm">1.85 | 2.05</span>
+</div>
+</div>
+<button class="w-full mt-6 text-on-surface-variant hover:text-primary font-label text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+                    Ver Todos os Mercados <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Trending Topics Section -->
+<div class="bg-surface-container-low p-6 rounded-2xl border border-primary/5">
+<h4 class="text-on-surface font-headline font-bold mb-5 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span> 
+                    Assuntos em Alta
+                </h4>
+<div class="space-y-5">
+<div class="flex items-start gap-4 group cursor-pointer">
+<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">01</span>
+<div>
+<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Bankroll Management para 2024</a>
+<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">1.2k discussões</p>
+</div>
+</div>
+<div class="flex items-start gap-4 group cursor-pointer">
+<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">02</span>
+<div>
+<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Novas Regras da Loteria Federal</a>
+<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">850 discussões</p>
+</div>
+</div>
+<div class="flex items-start gap-4 group cursor-pointer">
+<span class="text-2xl font-black text-surface-container-highest group-hover:text-primary transition-colors">03</span>
+<div>
+<a class="text-sm font-bold text-on-surface hover:text-primary transition-colors" href="#">Melhores Apps de HUD</a>
+<p class="text-[10px] text-on-surface-variant font-label uppercase mt-1 tracking-widest">430 discussões</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Promotion Card - Integrated styling from SCREEN_31 but with blue theme -->
+<div class="relative rounded-2xl overflow-hidden aspect-square flex flex-col justify-end p-8 group">
+<img alt="Promo" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkfT5gK-RLb5G_cjg_Dy0Z8Zh9hIkQhOAs19v5E0a22yA9TiNlqOdhiUVARWjl6gki8AyYJVj826hoVvh6iGpWet0TjLIjPEm39SvetnfWZVJphJ63r_SYV5I5DMK6kvAEyentGcGS98Y2an9IHkosWdPc6u2lB_CTneHmEThpGfQTewZb5abUKHzrFGxMAk61bRf4-Ue3WMIgIWJek_nfku7mTE45_zu7eMqaunGhRG8E3RqAEFEENNNXDVivWnaS4DRdqU_nCjE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+<div class="relative z-10">
+<h5 class="text-white font-headline font-bold text-2xl leading-tight mb-2">Seja Membro VIP Elite</h5>
+<p class="text-on-surface-variant text-sm mb-6">Sessões de coaching exclusivas e análise de mãos para membros.</p>
+<button class="w-full py-3 bg-white text-background font-headline font-bold rounded-xl hover:bg-primary transition-all active:scale-95 shadow-xl">Saiba Mais</button>
+</div>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="w-full py-16 bg-surface-container-lowest border-t border-surface-container-high mt-12">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center px-8">
+<div class="flex flex-col items-center md:items-start gap-3 mb-10 md:mb-0">
+<span class="text-2xl font-bold text-primary neon-glow font-headline">izgame</span>
+<p class="text-on-surface-variant font-body text-xs max-w-xs text-center md:text-left">A maior comunidade de poker e apostas do Brasil. Onde a estratégia encontra a diversão.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-10 font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="hover:text-primary transition-colors" href="#">Termos</a>
+<a class="hover:text-primary transition-colors" href="#">Publicidade</a>
+<a class="hover:text-primary transition-colors" href="#">Contato</a>
+</div>
+<div class="mt-10 md:mt-0 flex gap-6">
+<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="public">public</span>
+</a>
+<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="sports_esports">sports_esports</span>
+</a>
+<a class="w-11 h-11 rounded-full border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="live_tv">live_tv</span>
+</a>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto px-8 mt-12 pt-8 border-t border-outline-variant/5 text-center">
+<p class="text-on-surface-variant/40 font-label text-[10px] uppercase tracking-[0.3em]">© 2024 izgame. Todos os direitos reservados.</p>
+</div>
+</footer>
+
+<!-- Autenticação IZGAME -->
+<div id="authModal" class="hidden fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="relative w-full max-w-md rounded-2xl border border-primary/20 bg-surface-container p-7 shadow-2xl">
+    <button id="closeAuth" type="button" aria-label="Fechar" class="absolute right-5 top-4 text-on-surface-variant hover:text-white text-2xl">×</button>
+    <h2 id="authTitle" class="font-headline text-2xl font-bold text-primary mb-2">Entrar no IZGAME</h2>
+    <p id="authDescription" class="text-sm text-on-surface-variant mb-6">Entre para participar da comunidade.</p>
+    <form id="authForm" class="space-y-4">
+      <label class="block text-sm">E-mail<input id="authEmail" type="email" autocomplete="email" required maxlength="254" class="mt-2 w-full rounded-lg bg-background border border-outline-variant/50 p-3 text-on-surface" placeholder="seu@email.com"></label>
+      <label class="block text-sm">Senha<input id="authPassword" type="password" autocomplete="current-password" required minlength="8" class="mt-2 w-full rounded-lg bg-background border border-outline-variant/50 p-3 text-on-surface" placeholder="Sua senha"></label>
+      <p id="authMessage" class="text-sm hidden" role="status" aria-live="polite"></p>
+      <button id="authSubmit" type="submit" class="w-full bg-primary text-on-primary-container rounded-xl py-3 font-bold disabled:opacity-60">Entrar</button>
+    </form>
+    <button id="toggleAuthMode" type="button" class="mt-5 text-sm text-primary hover:underline">Não tem conta? Cadastre-se</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const URL = 'https://owvwsokyyqmnjxskqpyn.supabase.co';
+  const KEY = 'sb_publishable_GYM8c1kxWG8OgTRnskccHA_KCFjT1Zi';
+  const $ = (id) => document.getElementById(id);
+  const modal = $('authModal');
+  const message = $('authMessage');
+  let signupMode = false;
+  let client;
+  function notify(text, error = false) {
+    message.textContent = text;
+    message.classList.remove('hidden', 'text-error', 'text-tertiary');
+    message.classList.add(error ? 'text-error' : 'text-tertiary');
+  }
+  function openModal(signup = false) {
+    signupMode = signup;
+    $('authForm').reset();
+    message.classList.add('hidden');
+    $('authTitle').textContent = signup ? 'Criar conta no IZGAME' : 'Entrar no IZGAME';
+    $('authDescription').textContent = signup ? 'Cadastre-se com seu e-mail e senha.' : 'Entre para participar da comunidade.';
+    $('authSubmit').textContent = signup ? 'Criar conta' : 'Entrar';
+    $('toggleAuthMode').textContent = signup ? 'Já tem conta? Entrar' : 'Não tem conta? Cadastre-se';
+    $('authPassword').setAttribute('autocomplete', signup ? 'new-password' : 'current-password');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    $('authEmail').focus();
+  }
+  function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+  function renderUser(user) {
+    $('authButton').textContent = user ? (user.email || 'Minha conta') : 'Entrar';
+    $('authButton').title = user ? 'Conta conectada' : 'Entrar ou cadastrar';
+    $('logoutButton').classList.toggle('hidden', !user);
+    if (user) closeModal();
+  }
+  $('authButton').addEventListener('click', async () => {
+    if (!client) return alert('Não foi possível carregar a conexão com o Supabase. Atualize a página.');
+    const { data } = await client.auth.getUser();
+    if (data?.user) return alert('Você está conectado como ' + data.user.email);
+    openModal();
+  });
+  $('closeAuth').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  $('toggleAuthMode').addEventListener('click', () => openModal(!signupMode));
+  $('newDiscussionButton').addEventListener('click', async () => {
+    if (!client) return alert('Conexão indisponível.');
+    const { data } = await client.auth.getUser();
+    if (!data?.user) return openModal();
+    alert('Login confirmado! A criação de tópicos será adicionada na próxima etapa.');
+  });
+  $('logoutButton').addEventListener('click', async () => {
+    if (!client) return;
+    const { error } = await client.auth.signOut();
+    if (error) alert('Não foi possível sair: ' + error.message);
+  });
+  $('authForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!client) return notify('Conexão com Supabase indisponível.', true);
+    const email = $('authEmail').value.trim();
+    const password = $('authPassword').value;
+    const btn = $('authSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Aguarde...';
+    message.classList.add('hidden');
+    try {
+      if (signupMode) {
+        const { data, error } = await client.auth.signUp({ email, password, options: { emailRedirectTo: 'https://izgame.com.br/' } });
+        if (error) throw error;
+        if (data.session) { renderUser(data.user); }
+        else notify('Cadastro solicitado! Confira seu e-mail e confirme a conta antes de entrar.');
+      } else {
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        renderUser(data.user);
+      }
+    } catch (err) { notify(err.message || 'Não foi possível autenticar.', true); }
+    finally { btn.disabled = false; btn.textContent = signupMode ? 'Criar conta' : 'Entrar'; }
+  });
+  if (window.supabase?.createClient) {
+    client = window.supabase.createClient(URL, KEY);
+    client.auth.onAuthStateChange((_event, session) => renderUser(session?.user || null));
+  } else {
+    console.error('Biblioteca Supabase não carregada.');
+  }
+})();
+</script>
+</body></html>
