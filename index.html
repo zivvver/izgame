@@ -927,8 +927,7 @@ body.auth-open{overflow:hidden}
 (()=>{'use strict';const canvas=document.querySelector('#izgame-dots'),ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const touch=matchMedia('(pointer: coarse)').matches;let w=0,h=0,dpr=1,points=[],raf=0;const mouse={x:-9999,y:-9999,active:false};const gap=16,radius=145;function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);points=[];for(let y=12;y<h+gap;y+=gap)for(let x=12;x<w+gap;x+=gap)points.push({x,y});draw()}function draw(){ctx.clearRect(0,0,w,h);for(const p of points){let x=p.x,y=p.y,a=.21,r=1.0;if(mouse.active&&!reduce&&!touch){const dx=x-mouse.x,dy=y-mouse.y,dist=Math.hypot(dx,dy);if(dist<radius){const t=(1-dist/radius)**2;x+=dx/(dist||1)*t*12;y+=dy/(dist||1)*t*12;a+=t*.56;r+=t*.65}}ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=`rgba(173,184,199,${a})`;ctx.fill()}}function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;draw()})}window.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;schedule()},{passive:true});document.addEventListener('pointerleave',()=>{mouse.active=false;schedule()});window.addEventListener('resize',resize,{passive:true});resize()})();
 </script>
 <script>
-/* Configure a chave PUBLICÁVEL do Supabase antes de ativar autenticação real.
-   Nunca coloque a service_role/secret key neste HTML. */
+/* Autenticação Supabase com chave publicável. Nunca inclua chaves secret/service_role no HTML. */
 (()=>{
   'use strict';
   const SUPABASE_URL='https://huowmpaxgoeyqftrdjzf.supabase.co';
@@ -950,7 +949,7 @@ body.auth-open{overflow:hidden}
   const forgot=document.getElementById('auth-forgot');
   const LAST='izgame_last_activity',REM='izgame_remember_email';
   email.value=localStorage.getItem(REM)||'';
-  const touchActivity=()=>{if(client&&localStorage.getItem(LAST))localStorage.setItem(LAST,String(Date.now()))};
+  const touchActivity=()=>{if(client&&localStorage.getItem(LAST)){const last=Number(localStorage.getItem(LAST));if(Date.now()-last<=48*60*60*1000)localStorage.setItem(LAST,String(Date.now()))}};
   ['pointerdown','keydown','scroll'].forEach(event=>window.addEventListener(event,touchActivity,{passive:true}));
   const checkExpiry=async()=>{if(!client)return;const last=Number(localStorage.getItem(LAST)||0);if(last&&Date.now()-last>48*60*60*1000){await client.auth.signOut();localStorage.removeItem(LAST);trigger.textContent='Entrar'}};
   window.addEventListener('pageshow',checkExpiry);
@@ -958,7 +957,7 @@ body.auth-open{overflow:hidden}
   forgot.addEventListener('click',async()=>{if(!client){message('Autenticação indisponível.',true);return}if(!email.value.trim()){message('Digite seu e-mail primeiro.',true);return}const {error}=await client.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:location.origin+'/index.html?reset=1'});message(error?error.message:'Enviamos um link de recuperação para seu e-mail.',!!error)});
   
   let mode='login',client=null,lastFocus=null;
-  const configured=SUPABASE_PUBLISHABLE_KEY!=='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
+  const configured=SUPABASE_URL.startsWith('https://') && SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
   if(configured&&window.supabase?.createClient)client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
   const message=(text,error=false)=>{status.textContent=text;status.className='auth-status '+(error?'error':'success')};
   const setMode=(next)=>{
@@ -1000,7 +999,7 @@ body.auth-open{overflow:hidden}
     }catch(err){message(err.message||'Não foi possível autenticar.',true)}
     finally{submit.disabled=false;submit.textContent=mode==='register'?'Criar conta':'Entrar'}
   });
-  if(client){checkExpiry().then(()=>client.auth.getUser()).then(({data})=>{trigger.textContent=data?.user?'Sair':'Entrar'});client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}
+  if(client){checkExpiry().then(()=>client.auth.getUser()).then(({data})=>{trigger.textContent=data?.user?'Sair':'Entrar'}).catch(()=>message('Não foi possível verificar a sessão. Tente novamente.',true));client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}else{console.error('IZGAME: biblioteca Supabase não carregada ou configuração inválida.');}
 })();
 </script>
 </body>
