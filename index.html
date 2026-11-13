@@ -911,11 +911,13 @@ body.auth-open{overflow:hidden}
 <h2 id="auth-heading">Entrar no IZGAME</h2>
 <p id="auth-description">Acesse sua conta para continuar.</p>
 <form id="auth-form">
-<label class="auth-field" hidden="" id="auth-name-field">Nome de usuário<input autocomplete="username" id="auth-name" maxlength="24" minlength="3" pattern="[A-Za-z0-9_]+" placeholder="Seu nickname" type="text"/></label>
+<label class="auth-field" hidden="" id="auth-name-field">Nome de usuário<input autocomplete="username" id="auth-name" maxlength="20" minlength="3" pattern="[A-Za-z0-9_]+" placeholder="Seu nickname" type="text"/></label>
 <label class="auth-field">E-mail<input autocomplete="email" id="auth-email" placeholder="voce@exemplo.com" required="" type="email"/></label>
-<label class="auth-field">Senha<input autocomplete="current-password" id="auth-password" minlength="6" placeholder="Sua senha" required="" type="password"/></label>
+<label class="auth-field">Senha<input autocomplete="current-password" id="auth-password" minlength="8" placeholder="Sua senha" required="" type="password"/></label>
+<label id="remember-label" style="display:flex;align-items:center;gap:9px;color:#a7b5c5;font-size:12px;margin:12px 0"><input type="checkbox" id="auth-remember" checked> Lembrar meu e-mail e manter conectado</label>
 <button class="btn-primary auth-submit" id="auth-submit" type="submit">Entrar</button>
 </form>
+<button type="button" id="auth-forgot" class="auth-switch" style="margin-top:9px">Esqueceu sua senha?</button>
 <button class="auth-switch" id="auth-switch" type="button">Não tem conta? Criar conta</button>
 <div aria-live="polite" class="auth-status" id="auth-status" role="status"></div>
 </section>
@@ -929,8 +931,8 @@ body.auth-open{overflow:hidden}
    Nunca coloque a service_role/secret key neste HTML. */
 (()=>{
   'use strict';
-  const SUPABASE_URL='https://owvwsokyyqmnjxskqpyn.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY='COLE_AQUI_SUA_CHAVE_PUBLICAVEL';
+  const SUPABASE_URL='https://huowmpaxgoeyqftrdjzf.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
   const trigger=document.getElementById('auth-trigger');
   const overlay=document.getElementById('auth-overlay');
   const close=document.getElementById('auth-close');
@@ -944,8 +946,19 @@ body.auth-open{overflow:hidden}
   const password=document.getElementById('auth-password');
   const submit=document.getElementById('auth-submit');
   const toggle=document.getElementById('auth-switch');
+  const remember=document.getElementById('auth-remember');
+  const forgot=document.getElementById('auth-forgot');
+  const LAST='izgame_last_activity',REM='izgame_remember_email';
+  email.value=localStorage.getItem(REM)||'';
+  const touchActivity=()=>{if(client&&localStorage.getItem(LAST))localStorage.setItem(LAST,String(Date.now()))};
+  ['pointerdown','keydown','scroll'].forEach(event=>window.addEventListener(event,touchActivity,{passive:true}));
+  const checkExpiry=async()=>{if(!client)return;const last=Number(localStorage.getItem(LAST)||0);if(last&&Date.now()-last>48*60*60*1000){await client.auth.signOut();localStorage.removeItem(LAST);trigger.textContent='Entrar'}};
+  window.addEventListener('pageshow',checkExpiry);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkExpiry()});
+  forgot.addEventListener('click',async()=>{if(!client){message('Autenticação indisponível.',true);return}if(!email.value.trim()){message('Digite seu e-mail primeiro.',true);return}const {error}=await client.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:location.origin+'/index.html?reset=1'});message(error?error.message:'Enviamos um link de recuperação para seu e-mail.',!!error)});
+  
   let mode='login',client=null,lastFocus=null;
-  const configured=SUPABASE_PUBLISHABLE_KEY!=='COLE_AQUI_SUA_CHAVE_PUBLICAVEL';
+  const configured=SUPABASE_PUBLISHABLE_KEY!=='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
   if(configured&&window.supabase?.createClient)client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
   const message=(text,error=false)=>{status.textContent=text;status.className='auth-status '+(error?'error':'success')};
   const setMode=(next)=>{
@@ -963,7 +976,7 @@ body.auth-open{overflow:hidden}
   const loginNext=loginParams.get('next')==='rewards-dashboard.html'?'rewards-dashboard.html':null;
   if(loginParams.get('login')==='1')window.addEventListener('load',open,{once:true});
   trigger.addEventListener('click',async()=>{
-    if(client){const {data}=await client.auth.getUser();if(data?.user){const {error}=await client.auth.signOut();if(error){open();message(error.message,true)}else{trigger.textContent='Entrar'}return}}
+    if(client){await checkExpiry();const {data}=await client.auth.getUser();if(data?.user){const {error}=await client.auth.signOut();if(error){open();message(error.message,true)}else{trigger.textContent='Entrar';localStorage.removeItem(LAST)}return}}
     open();
   });
   close.addEventListener('click',hide);
@@ -976,17 +989,18 @@ body.auth-open{overflow:hidden}
     submit.disabled=true;submit.textContent='Aguarde...';message('');
     try{
       if(mode==='register'){
+        if(!/^[A-Za-z0-9_]{3,20}$/.test(nameInput.value.trim()))throw Error('Nick deve ter 3 a 20 caracteres: letras, números ou _.');
         const {data,error}=await client.auth.signUp({email:email.value.trim(),password:password.value,options:{data:{username:nameInput.value.trim()}}});
         if(error)throw error;
-        if(data.session){hide();if(loginNext)location.href=loginNext}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
+        if(data.session){localStorage.setItem(LAST,String(Date.now()));hide();if(loginNext)location.href=loginNext}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
       }else{
         const {error}=await client.auth.signInWithPassword({email:email.value.trim(),password:password.value});
-        if(error)throw error;hide();if(loginNext)location.href=loginNext;
+        if(error)throw error;localStorage.setItem(LAST,String(Date.now()));if(remember.checked)localStorage.setItem(REM,email.value.trim());else localStorage.removeItem(REM);hide();if(loginNext)location.href=loginNext;
       }
     }catch(err){message(err.message||'Não foi possível autenticar.',true)}
     finally{submit.disabled=false;submit.textContent=mode==='register'?'Criar conta':'Entrar'}
   });
-  if(client){client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}
+  if(client){checkExpiry().then(()=>client.auth.getUser()).then(({data})=>{trigger.textContent=data?.user?'Sair':'Entrar'});client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}
 })();
 </script>
 </body>
