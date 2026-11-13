@@ -183,10 +183,10 @@ const initial={balance:4000,earned:6200,reserved:2000,redeems:1,months:9,referra
 })();
 </script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script>
 (async()=>{
- const url='https://owvwsokyyqmnjxskqpyn.supabase.co';
- const key='COLE_AQUI_SUA_CHAVE_PUBLICAVEL';
- if(key==='COLE_AQUI_SUA_CHAVE_PUBLICAVEL'||!window.supabase){location.replace('izgame-rewards.html');return;}
- try{const client=window.supabase.createClient(url,key);const {data,error}=await client.auth.getUser();if(error||!data?.user){location.replace('izgame-rewards.html');return;}document.body.classList.add('auth-ready');}
- catch{location.replace('izgame-rewards.html');}
+ const url='https://huowmpaxgoeyqftrdjzf.supabase.co';
+ const key='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN';
+ if(key==='sb_publishable_52i2gjWhOOgQQlhpcJdeQA_23p82uKN'||!window.supabase){location.replace('index.html?login=1&next=rewards-dashboard.html');return;}
+ try{const client=window.supabase.createClient(url,key);const last=Number(localStorage.getItem('izgame_last_activity')||0);if(last&&Date.now()-last>48*60*60*1000){await client.auth.signOut();localStorage.removeItem('izgame_last_activity');location.replace('index.html?login=1&next=rewards-dashboard.html');return;}const {data,error}=await client.auth.getUser();if(error||!data?.user){location.replace('index.html?login=1&next=rewards-dashboard.html');return;}if(!last)localStorage.setItem('izgame_last_activity',String(Date.now()));document.body.classList.add('auth-ready');}
+ catch{location.replace('index.html?login=1&next=rewards-dashboard.html');}
 })();
 </script></body></html>
