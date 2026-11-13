@@ -973,7 +973,9 @@ body.auth-open{overflow:hidden}
   const hide=()=>{overlay.classList.remove('open');document.body.classList.remove('auth-open');lastFocus?.focus()};
   const loginParams=new URLSearchParams(location.search);
   const loginNext=loginParams.get('next')==='rewards-dashboard.html'?'rewards-dashboard.html':null;
-  if(loginParams.get('login')==='1')window.addEventListener('load',open,{once:true});
+  if(loginParams.get('login')==='1')window.addEventListener('load',async()=>{
+    if(client){try{const {data}=await client.auth.getSession();if(data?.session){if(loginNext){location.replace(loginNext+'?v=20261113b');return;}history.replaceState(null,'',location.pathname);return;}}catch(e){console.warn(e)}}open();
+  },{once:true});
   // Rewards: visitantes veem a explicação; usuários autenticados acessam a dashboard.
   document.querySelectorAll('a[href="#rewards"]').forEach(link=>{
     link.addEventListener('click',async event=>{
@@ -984,7 +986,7 @@ body.auth-open{overflow:hidden}
         const {data,error}=await client.auth.getUser();
         if(error)throw error;
         if(data?.user){
-          location.href='rewards-dashboard.html';
+          location.href='rewards-dashboard.html?v=20261113b';
         }else{
           document.getElementById('rewards')?.scrollIntoView({behavior:'smooth'});
         }
