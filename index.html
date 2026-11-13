@@ -68,7 +68,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 9999px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -614,6 +614,24 @@ footer {
 }
 /* O conteúdo permanece acima da camada de pontos. */
 body > main, body > footer { position: relative; z-index: 1; }
+
+/* Janela de autenticação — estilos isolados */
+.auth-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+.auth-overlay.open{display:flex}
+.auth-panel{width:min(100%,430px);background:#10151c;border:1px solid var(--border-light);border-radius:22px;padding:30px;box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative}
+.auth-close{position:absolute;top:16px;right:18px;background:transparent;color:var(--text-secondary);font-size:25px;line-height:1;padding:4px 9px}
+.auth-panel h2{font-family:var(--font-heading);font-size:27px;line-height:1.2;margin-bottom:8px}
+.auth-panel p{color:var(--text-secondary);font-size:13px;margin-bottom:20px}
+.auth-field{display:block;margin:14px 0;font-size:12px;font-weight:600;color:var(--text-secondary)}
+.auth-field input{display:block;width:100%;margin-top:7px;padding:12px 13px;border-radius:10px;border:1px solid var(--border-light);background:#090d12;color:#fff;font:inherit;font-size:14px;outline:none}
+.auth-field input:focus{border-color:var(--cyan)}
+.auth-submit{width:100%;justify-content:center;margin-top:12px;padding:13px}
+.auth-switch{display:block;background:transparent;color:var(--cyan);font-size:13px;margin:17px auto 0}
+.auth-status{min-height:20px;margin-top:14px;font-size:12px;color:var(--text-secondary);overflow-wrap:anywhere}
+.auth-status.error{color:#ff9b9b}
+.auth-status.success{color:#77e5bd}
+body.auth-open{overflow:hidden}
+@media(max-width:680px){.auth-panel{padding:24px}.nav-actions{gap:8px}.nav-actions .btn-primary{padding:10px 15px}}
 </style>
 </head>
 <body>
@@ -636,7 +654,7 @@ body > main, body > footer { position: relative; z-index: 1; }
     </ul>
     <div class="nav-actions">
       <div class="lang-badge">🇧🇷 PT-BR</div>
-      <a href="#salas" class="btn-primary">Explorar Salas</a>
+      <button type="button" class="btn-primary" id="auth-trigger" aria-haspopup="dialog">Entrar</button>
     </div>
   </nav>
 </header>
@@ -890,8 +908,88 @@ body > main, body > footer { position: relative; z-index: 1; }
   </div>
 </footer>
 
+
+<div class="auth-overlay" id="auth-overlay" role="presentation">
+  <section class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="auth-heading">
+    <button type="button" class="auth-close" id="auth-close" aria-label="Fechar">×</button>
+    <h2 id="auth-heading">Entrar no IZGAME</h2>
+    <p id="auth-description">Acesse sua conta para continuar.</p>
+    <form id="auth-form">
+      <label class="auth-field" id="auth-name-field" hidden>Nome de usuário<input id="auth-name" type="text" autocomplete="username" minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" placeholder="Seu nickname"></label>
+      <label class="auth-field">E-mail<input id="auth-email" type="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
+      <label class="auth-field">Senha<input id="auth-password" type="password" autocomplete="current-password" required minlength="6" placeholder="Sua senha"></label>
+      <button type="submit" class="btn-primary auth-submit" id="auth-submit">Entrar</button>
+    </form>
+    <button type="button" class="auth-switch" id="auth-switch">Não tem conta? Criar conta</button>
+    <div id="auth-status" class="auth-status" role="status" aria-live="polite"></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 (()=>{'use strict';const canvas=document.querySelector('#izgame-dots'),ctx=canvas.getContext('2d',{alpha:true});if(!ctx)return;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;const touch=matchMedia('(pointer: coarse)').matches;let w=0,h=0,dpr=1,points=[],raf=0;const mouse={x:-9999,y:-9999,active:false};const gap=16,radius=145;function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);points=[];for(let y=12;y<h+gap;y+=gap)for(let x=12;x<w+gap;x+=gap)points.push({x,y});draw()}function draw(){ctx.clearRect(0,0,w,h);for(const p of points){let x=p.x,y=p.y,a=.21,r=1.0;if(mouse.active&&!reduce&&!touch){const dx=x-mouse.x,dy=y-mouse.y,dist=Math.hypot(dx,dy);if(dist<radius){const t=(1-dist/radius)**2;x+=dx/(dist||1)*t*12;y+=dy/(dist||1)*t*12;a+=t*.56;r+=t*.65}}ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=`rgba(173,184,199,${a})`;ctx.fill()}}function schedule(){if(raf)return;raf=requestAnimationFrame(()=>{raf=0;draw()})}window.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;mouse.x=e.clientX;mouse.y=e.clientY;mouse.active=true;schedule()},{passive:true});document.addEventListener('pointerleave',()=>{mouse.active=false;schedule()});window.addEventListener('resize',resize,{passive:true});resize()})();
+</script>
+
+<script>
+/* Configure a chave PUBLICÁVEL do Supabase antes de ativar autenticação real.
+   Nunca coloque a service_role/secret key neste HTML. */
+(()=>{
+  'use strict';
+  const SUPABASE_URL='https://owvwsokyyqmnjxskqpyn.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY='COLE_AQUI_SUA_CHAVE_PUBLICAVEL';
+  const trigger=document.getElementById('auth-trigger');
+  const overlay=document.getElementById('auth-overlay');
+  const close=document.getElementById('auth-close');
+  const form=document.getElementById('auth-form');
+  const status=document.getElementById('auth-status');
+  const heading=document.getElementById('auth-heading');
+  const desc=document.getElementById('auth-description');
+  const nameField=document.getElementById('auth-name-field');
+  const nameInput=document.getElementById('auth-name');
+  const email=document.getElementById('auth-email');
+  const password=document.getElementById('auth-password');
+  const submit=document.getElementById('auth-submit');
+  const toggle=document.getElementById('auth-switch');
+  let mode='login',client=null,lastFocus=null;
+  const configured=SUPABASE_PUBLISHABLE_KEY!=='COLE_AQUI_SUA_CHAVE_PUBLICAVEL';
+  if(configured&&window.supabase?.createClient)client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+  const message=(text,error=false)=>{status.textContent=text;status.className='auth-status '+(error?'error':'success')};
+  const setMode=(next)=>{
+    mode=next;heading.textContent=next==='register'?'Criar conta':'Entrar no IZGAME';
+    desc.textContent=next==='register'?'Crie sua conta com e-mail e senha.':'Acesse sua conta para continuar.';
+    nameField.hidden=next!=='register';nameInput.required=next==='register';
+    password.autocomplete=next==='register'?'new-password':'current-password';
+    submit.textContent=next==='register'?'Criar conta':'Entrar';
+    toggle.textContent=next==='register'?'Já tem conta? Entrar':'Não tem conta? Criar conta';
+    status.textContent='';status.className='auth-status';
+  };
+  const open=()=>{lastFocus=document.activeElement;overlay.classList.add('open');document.body.classList.add('auth-open');setMode('login');email.focus()};
+  const hide=()=>{overlay.classList.remove('open');document.body.classList.remove('auth-open');lastFocus?.focus()};
+  trigger.addEventListener('click',async()=>{
+    if(client){const {data}=await client.auth.getUser();if(data?.user){const {error}=await client.auth.signOut();if(error){open();message(error.message,true)}else{trigger.textContent='Entrar'}return}}
+    open();
+  });
+  close.addEventListener('click',hide);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)hide()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))hide()});
+  toggle.addEventListener('click',()=>setMode(mode==='login'?'register':'login'));
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(!client){message('O formulário está pronto, mas é necessário configurar a chave publicável do Supabase para ativar o login.',true);return}
+    submit.disabled=true;submit.textContent='Aguarde...';message('');
+    try{
+      if(mode==='register'){
+        const {data,error}=await client.auth.signUp({email:email.value.trim(),password:password.value,options:{data:{username:nameInput.value.trim()}}});
+        if(error)throw error;
+        if(data.session){hide()}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
+      }else{
+        const {error}=await client.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+        if(error)throw error;hide();
+      }
+    }catch(err){message(err.message||'Não foi possível autenticar.',true)}
+    finally{submit.disabled=false;submit.textContent=mode==='register'?'Criar conta':'Entrar'}
+  });
+  if(client){client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}
+})();
 </script>
 </body>
 </html>
