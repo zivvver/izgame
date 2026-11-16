@@ -670,6 +670,10 @@ body.auth-open{overflow:hidden}
 .room-logo-champion { background: linear-gradient(135deg,#715611,#352b10); border-color: #b88e18; }
 @media (max-width: 992px) { .room-card { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 680px) { .room-card { grid-template-columns: 1fr; } }
+</style><style>/* IZGAME: reserva espaço para a barra sticky ao navegar por âncoras */
+html{scroll-padding-top:150px}
+section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="parcerias"], [id="rewards"]{scroll-margin-top:150px!important}
+@media(max-width:680px){html{scroll-padding-top:125px}section[id]{scroll-margin-top:125px!important}}
 </style></head>
 <body>
 <canvas aria-hidden="true" id="izgame-dots"></canvas>
