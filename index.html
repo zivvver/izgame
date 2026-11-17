@@ -821,7 +821,16 @@ body.iz-light #rewards .level strong {
 html { scroll-padding-top: 0; }
 section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="parcerias"], [id="rewards"] { scroll-margin-top: 55px !important; }
 @media (max-width:680px) { section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="parcerias"], [id="rewards"] { scroll-margin-top: 55px !important; } }
-</style></head>
+</style><style>
+/* IZGAME — cartão de ferramenta integrado ao design oficial */
+.izgame-tool-card { display:block; text-decoration:none; cursor:pointer; }
+.izgame-tool-card h3 { color:var(--text); }
+.izgame-tool-card .izgame-tool-link { display:inline-flex; align-items:center; gap:8px; margin-top:20px; color:var(--cyan); font-size:13px; font-weight:700; }
+.izgame-tool-card:hover .izgame-tool-link { gap:13px; }
+.nav-links { gap:clamp(12px, 1.65vw, 28px); }
+@media (max-width:1100px) { .nav-links { gap:12px; } .nav-links a { font-size:12px; } }
+</style>
+</head>
 <body>
 <canvas aria-hidden="true" id="izgame-dots"></canvas>
 <header class="header-wrap">
@@ -836,7 +845,8 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <ul class="nav-links">
 <li><a href="#salas"><span data-i18n="nav.rooms">Salas de Poker</span></a></li>
 <li><a href="#criterios"><span data-i18n="nav.method">Metodologia</span></a></li>
-<li><a href="#guias"><span data-i18n="nav.guides">Guias &amp; Estratégia</span></a></li>
+<li><a href="#guias"><span data-i18n="nav.guides">Guias &amp; Estratégia</span></a>
+<a href="#ferramentas">Ferramentas</a></li>
 <li><a href="forum.html"><span data-i18n="nav.forum">Fórum</span></a></li>
 <li><a href="#rewards">Rewards</a></li>
 </ul>
@@ -992,6 +1002,24 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 </div>
 </section>
 <!-- Knowledge & Guides Section -->
+<!-- IZGAME: seção de ferramentas -->
+<section class="section" id="ferramentas">
+  <div class="section-header">
+    <div class="section-title-wrap">
+      <span class="sub-tag">ANÁLISE &amp; SIMULAÇÃO</span>
+      <h2 class="section-title">Ferramentas de Poker</h2>
+      <p class="section-desc">Simuladores gratuitos para explorar cenários, custos e resultados com mais clareza.</p>
+    </div>
+  </div>
+  <div class="features-grid">
+    <a class="feature-card izgame-tool-card" href="spins.html" aria-label="Abrir simulador de Spins 3-Max">
+      <div class="feature-icon-box">📊</div>
+      <h3>Simulador de Spins 3-Max</h3>
+      <p>Configure a sala, o buy-in e seus resultados para simular o impacto do rake e estimar o retorno esperado.</p>
+      <span class="izgame-tool-link">Abrir calculadora <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+</section>
 <section class="section" id="guias">
 <div class="section-header">
 <div class="section-title-wrap">
@@ -1043,7 +1071,8 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <ul>
 <li><a href="#salas">Salas de Poker</a></li>
 <li><a href="#criterios">Critérios de Avaliação</a></li>
-<li><a href="#guias">Artigos &amp; Guias</a></li>
+<li><a href="#guias">Artigos &amp; Guias</a>
+<a href="#ferramentas">Ferramentas</a></li>
 <li><a href="#parcerias">Parcerias Comerciais</a></li>
 </ul>
 </div>
