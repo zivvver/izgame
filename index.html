@@ -659,6 +659,20 @@ body.auth-open{overflow:hidden}
 
 /* IZGAME Rewards — explicação completa integrada à home */
 #rewards{scroll-margin-top:115px}#rewards .rewards-intro{margin-bottom:30px}#rewards .rewards-intro h2{margin:10px 0 12px}#rewards .rewards-intro p{max-width:800px;color:var(--text-secondary);font-size:15px}#rewards .reward-note{font-size:12px!important;margin-top:12px;color:var(--text-muted)!important}#rewards .reward-subsection{padding:26px 0 30px}#rewards .reward-subsection>h2{font-family:var(--font-heading);font-size:26px;letter-spacing:-.035em;color:#fff;margin-bottom:8px}#rewards .reward-subsection>p{color:var(--text-secondary);font-size:14px;margin-bottom:20px}#rewards .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}#rewards .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px}#rewards .card h3{font-size:16px;color:#fff;margin:12px 0 8px;font-family:var(--font-heading)}#rewards .card p{font-size:13px;color:var(--text-secondary);line-height:1.7}#rewards .iconbox{display:grid;place-items:center;width:42px;height:42px;background:var(--cyan-dim);border:1px solid var(--cyan-border);border-radius:12px;color:var(--cyan);font-size:19px}#rewards .levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:20px 0}#rewards .level{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 12px;text-align:center;display:flex;flex-direction:column;gap:6px}#rewards .level strong{font-size:14px}#rewards .level span{color:var(--cyan);font-size:25px;font-weight:800}#rewards .level small{font-size:11px;color:var(--text-secondary)}#rewards .platinum{border:1px solid var(--cyan-border);background:linear-gradient(120deg,rgba(0,210,255,.09),var(--surface));border-radius:18px;padding:24px;margin-top:16px}#rewards .platinum h3{font-family:var(--font-heading);font-size:20px;margin-bottom:8px}#rewards .platinum p{color:var(--text-secondary);font-size:14px}#rewards .faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}#rewards .reward-cta{border:1px solid var(--cyan-border);background:linear-gradient(120deg,rgba(0,210,255,.09),var(--surface));border-radius:22px;text-align:center;padding:38px 20px}#rewards .reward-cta p{margin:12px auto 22px;max-width:620px}#rewards .cta{display:inline-flex;background:var(--cyan);color:#04141b;font-weight:700;border-radius:12px;padding:12px 24px}#rewards .cta:hover{background:var(--cyan-hover)}@media(max-width:760px){#rewards .cards,#rewards .faq{grid-template-columns:1fr}#rewards .levels{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* IZGAME — menu de navegação exclusivo para mobile */
+.iz-mobile-menu{display:none}
+@media(max-width:680px){
+  .header-wrap{margin-bottom:20px}
+  .iz-mobile-menu{display:block;position:absolute;top:calc(100% + 12px);left:24px;z-index:105}
+  .iz-mobile-toggle{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:13px;background:rgba(15,19,24,.95);border:1px solid var(--border-light);color:var(--cyan);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  .iz-mobile-toggle svg{width:21px;height:21px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+  .iz-mobile-toggle[aria-expanded="true"]{border-color:var(--cyan-border);background:var(--surface-card)}
+  .iz-mobile-dropdown{position:absolute;top:calc(100% + 9px);left:0;width:min(290px,calc(100vw - 48px));padding:9px;background:rgba(15,19,24,.98);border:1px solid var(--border-light);border-radius:17px;box-shadow:0 18px 48px rgba(0,0,0,.55);backdrop-filter:blur(18px)}
+  .iz-mobile-dropdown[hidden]{display:none!important}
+  .iz-mobile-dropdown a{display:block;padding:12px 14px;color:var(--text-secondary);font-size:13px;font-weight:600;border-radius:10px}
+  .iz-mobile-dropdown a:hover,.iz-mobile-dropdown a:focus-visible{background:var(--cyan-dim);color:var(--cyan);outline:none}
+}
 </style>
 <style>
 /* Logos oficiais fornecidos pelo projeto: arquivos locais e fundos personalizados */
@@ -700,6 +714,12 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <button aria-haspopup="dialog" class="btn-primary" id="auth-trigger" type="button">Entrar</button>
 </div>
 </nav>
+<div class="iz-mobile-menu" id="iz-mobile-menu">
+<button class="iz-mobile-toggle" id="iz-mobile-toggle" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="iz-mobile-dropdown"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+<nav class="iz-mobile-dropdown" id="iz-mobile-dropdown" aria-label="Navegação mobile" hidden>
+<a href="#salas">Salas de Poker</a><a href="#criterios">Metodologia</a><a href="#guias">Guias &amp; Estratégia</a><a href="forum.html">Fórum</a><a href="#rewards">Rewards</a>
+</nav>
+</div>
 </header>
 <main class="container" id="inicio">
 <!-- Hero Section -->
@@ -1036,6 +1056,20 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
     finally{submit.disabled=false;submit.textContent=mode==='register'?'Criar conta':'Entrar'}
   });
   if(client){checkExpiry().then(()=>client.auth.getUser()).then(({data})=>{trigger.textContent=data?.user?'Sair':'Entrar'}).catch(()=>message('Não foi possível verificar a sessão. Tente novamente.',true));client.auth.onAuthStateChange((_event,session)=>{trigger.textContent=session?.user?'Sair':'Entrar'})}else{console.error('IZGAME: biblioteca Supabase não carregada ou configuração inválida.');}
+})();
+</script>
+<script>
+/* Menu mobile IZGAME — sem interferir na navegação desktop */
+(function(){
+  const toggle=document.getElementById('iz-mobile-toggle');
+  const dropdown=document.getElementById('iz-mobile-dropdown');
+  if(!toggle||!dropdown)return;
+  function close(){dropdown.hidden=true;toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Abrir menu de navegação');}
+  toggle.addEventListener('click',function(){const open=dropdown.hidden;dropdown.hidden=!open;toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'Fechar menu de navegação':'Abrir menu de navegação');});
+  dropdown.addEventListener('click',function(e){if(e.target.closest('a'))close();});
+  document.addEventListener('click',function(e){if(!e.target.closest('#iz-mobile-menu'))close();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+  window.addEventListener('resize',function(){if(window.innerWidth>680)close();});
 })();
 </script>
 </body>
