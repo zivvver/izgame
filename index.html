@@ -683,6 +683,23 @@ body.auth-open{overflow:hidden}
   .iz-mobile-dropdown a{display:block;padding:12px 14px;color:var(--text-secondary);font-size:13px;font-weight:600;border-radius:10px}
   .iz-mobile-dropdown a:hover,.iz-mobile-dropdown a:focus-visible{background:var(--cyan-dim);color:var(--cyan);outline:none}
 }
+
+
+/* IZGAME: bandeiras circulares e menu multilíngue */
+.iz-lang-trigger.lang-badge{width:39px;height:39px;min-width:39px;padding:3px;justify-content:center;border-radius:50%;line-height:1}
+.iz-flag{display:inline-flex;align-items:center;justify-content:center;width:29px;height:29px;min-width:29px;border-radius:50%;overflow:hidden;font-size:29px;line-height:1;background:#18212c;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+.iz-lang-menu{min-width:164px}
+.iz-lang-menu button{display:flex;align-items:center;gap:11px}
+.iz-lang-menu .iz-flag{width:27px;height:27px;min-width:27px;font-size:27px}
+.iz-lang-menu .iz-lang-name{white-space:nowrap}
+
+/* IZGAME: seletor de idioma — isolado do layout existente */
+.iz-lang-wrap{position:relative;display:inline-flex}
+.iz-lang-trigger{cursor:pointer;font-family:inherit;white-space:nowrap}
+.iz-lang-menu{position:absolute;right:0;top:calc(100% + 10px);min-width:172px;padding:7px;background:var(--surface);border:1px solid var(--border-light);border-radius:13px;box-shadow:0 16px 35px rgba(0,0,0,.4);z-index:250}
+.iz-lang-menu[hidden]{display:none!important}
+.iz-lang-menu button{display:block;width:100%;text-align:left;padding:10px 12px;color:var(--text-secondary);background:transparent;border-radius:8px;font-size:13px}
+.iz-lang-menu button:hover,.iz-lang-menu button[aria-current="true"]{background:var(--surface-hover);color:var(--cyan)}
 </style>
 <style>
 /* Logos oficiais fornecidos pelo projeto: arquivos locais e fundos personalizados */
@@ -713,14 +730,14 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <span>izgame<span class="dot">.</span></span>
 </a>
 <ul class="nav-links">
-<li><a href="#salas">Salas de Poker</a></li>
-<li><a href="#criterios">Metodologia</a></li>
-<li><a href="#guias">Guias &amp; Estratégia</a></li>
-<li><a href="forum.html">Fórum</a></li>
+<li><a href="#salas"><span data-i18n="nav.rooms">Salas de Poker</span></a></li>
+<li><a href="#criterios"><span data-i18n="nav.method">Metodologia</span></a></li>
+<li><a href="#guias"><span data-i18n="nav.guides">Guias &amp; Estratégia</span></a></li>
+<li><a href="forum.html"><span data-i18n="nav.forum">Fórum</span></a></li>
 <li><a href="#rewards">Rewards</a></li>
 </ul>
 <div class="nav-actions">
-<div class="lang-badge">🇧🇷 PT-BR</div>
+<div class="iz-lang-wrap"><button type="button" class="lang-badge iz-lang-trigger" id="iz-lang-trigger" aria-label="Selecionar idioma" aria-haspopup="true" aria-controls="iz-lang-menu" aria-expanded="false"><span class="iz-flag iz-flag-br" aria-hidden="true">🇧🇷</span></button><div class="iz-lang-menu" id="iz-lang-menu" hidden><button type="button" data-lang="pt-BR"><span class="iz-flag iz-flag-br" aria-hidden="true">🇧🇷</span><span class="iz-lang-name">Português</span></button><button type="button" data-lang="en"><span class="iz-flag iz-flag-gb" aria-hidden="true">🇬🇧</span><span class="iz-lang-name">Inglês</span></button><button type="button" data-lang="es"><span class="iz-flag iz-flag-es" aria-hidden="true">🇪🇸</span><span class="iz-lang-name">Espanhol</span></button></div></div>
 <button aria-haspopup="dialog" class="btn-primary" id="auth-trigger" type="button">Entrar</button>
 </div>
 </nav>
@@ -734,29 +751,29 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <main class="container" id="inicio">
 <!-- Hero Section -->
 <section class="hero">
-<div class="hero-badge">Portal Editorial Independente</div>
-<h1>O universo do poker.<br/><span>Informação técnica para jogar melhor.</span></h1>
-<p>Avaliações transparentes de salas de poker online, comparativos de rake, análises de softwares e guias estratégicos para tomadas de decisão lucrativas.</p>
+<div class="hero-badge"><span data-i18n="hero.badge">Portal Editorial Independente</span></div>
+<h1><span data-i18n="hero.title">O universo do poker.</span><br/><span data-i18n="hero.subtitle">Informação técnica para jogar melhor.</span></h1>
+<p><span data-i18n="hero.description">Avaliações transparentes de salas de poker online, comparativos de rake, análises de softwares e guias estratégicos para tomadas de decisão lucrativas.</span></p>
 <div class="hero-cta">
-<a class="btn-primary" href="#salas">Ver Salas em Destaque →</a>
-<a class="btn-secondary" href="#guias">Explorar Biblioteca de Guias</a>
+<a class="btn-primary" href="#salas"><span data-i18n="hero.rooms">Ver Salas em Destaque →</span></a>
+<a class="btn-secondary" href="#guias"><span data-i18n="hero.guides">Explorar Biblioteca de Guias</span></a>
 </div>
 <div class="hero-stats">
 <div class="stat-item">
 <div class="stat-val">100%</div>
-<div class="stat-label">Análises Isentas</div>
+<div class="stat-label"><span data-i18n="stats.independent">Análises Isentas</span></div>
 </div>
 <div class="stat-item">
 <div class="stat-val">30<span>+</span></div>
-<div class="stat-label">Plataformas Avaliadas</div>
+<div class="stat-label"><span data-i18n="stats.platforms">Plataformas Avaliadas</span></div>
 </div>
 <div class="stat-item">
 <div class="stat-val">Rake &amp; HUD</div>
-<div class="stat-label">Comparações Técnicas</div>
+<div class="stat-label"><span data-i18n="stats.technical">Comparações Técnicas</span></div>
 </div>
 <div class="stat-item">
 <div class="stat-val">2026</div>
-<div class="stat-label">Dados Atualizados</div>
+<div class="stat-label"><span data-i18n="stats.updated">Dados Atualizados</span></div>
 </div>
 </div>
 </section>
@@ -1092,6 +1109,61 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
   document.addEventListener('click',function(e){if(!e.target.closest('#iz-mobile-menu'))close();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
   window.addEventListener('resize',function(){if(window.innerWidth>680)close();});
+})();
+</script>
+<script>
+/* IZGAME i18n — primeira etapa. Conteúdo editorial ainda em português. */
+(function(){
+ const translations={"en": {"nav.rooms": "Poker Rooms", "nav.method": "Methodology", "nav.guides": "Guides & Strategy", "nav.forum": "Forum", "hero.badge": "Independent Editorial Portal", "hero.title": "The world of poker.", "hero.subtitle": "Technical insights to play better.", "hero.description": "Transparent online poker room reviews, rake comparisons, software analysis, and strategy guides for informed decisions.", "hero.rooms": "View Featured Rooms →", "hero.guides": "Explore Guide Library", "stats.independent": "Independent Reviews", "stats.platforms": "Platforms Reviewed", "stats.technical": "Technical Comparisons", "stats.updated": "Updated Data"}, "es": {"nav.rooms": "Salas de Poker", "nav.method": "Metodología", "nav.guides": "Guías y Estrategia", "nav.forum": "Foro", "hero.badge": "Portal Editorial Independiente", "hero.title": "El universo del póker.", "hero.subtitle": "Información técnica para jugar mejor.", "hero.description": "Reseñas transparentes de salas de póker online, comparativas de rake, análisis de software y guías estratégicas para tomar mejores decisiones.", "hero.rooms": "Ver Salas Destacadas →", "hero.guides": "Explorar Biblioteca de Guías", "stats.independent": "Análisis Independientes", "stats.platforms": "Plataformas Evaluadas", "stats.technical": "Comparaciones Técnicas", "stats.updated": "Datos Actualizados"}};
+ const nodes=[...document.querySelectorAll('[data-i18n]')];
+ const originals=Object.fromEntries(nodes.map(el=>[el.dataset.i18n,el.textContent]));
+ const trigger=document.getElementById('iz-lang-trigger');
+ const menu=document.getElementById('iz-lang-menu');
+ if(!trigger||!menu)return;
+ const flags={'pt-BR':['🇧🇷','br'],'en':['🇬🇧','gb'],'es':['🇪🇸','es']};
+ const languageNames={
+  'pt-BR':{'pt-BR':'Português','en':'Inglês','es':'Espanhol'},
+  'en':{'pt-BR':'Portuguese','en':'English','es':'Spanish'},
+  'es':{'pt-BR':'Portugués','en':'Inglés','es':'Español'}
+ };
+ const supported=['pt-BR','en','es'];
+ function normalized(code){code=String(code||'').toLowerCase();return code.startsWith('es')?'es':code.startsWith('en')?'en':'pt-BR'}
+ function apply(lang){
+  if(!supported.includes(lang))lang='pt-BR';
+  document.documentElement.lang=lang;
+  nodes.forEach(el=>{const key=el.dataset.i18n;el.textContent=(translations[lang]||{})[key]||originals[key]||''});
+  trigger.innerHTML='<span class="iz-flag iz-flag-'+flags[lang][1]+'" aria-hidden="true">'+flags[lang][0]+'</span>';
+  trigger.setAttribute('aria-label',{'pt-BR':'Selecionar idioma','en':'Select language','es':'Seleccionar idioma'}[lang]);
+  menu.querySelectorAll('[data-lang]').forEach(b=>{
+   b.setAttribute('aria-current',String(b.dataset.lang===lang));
+   b.querySelector('.iz-lang-name').textContent=languageNames[lang][b.dataset.lang];
+  });
+ }
+ let saved;try{saved=localStorage.getItem('izgame-language')}catch(e){}
+ let manualChoice=!!(saved&&supported.includes(saved));
+ apply(manualChoice?saved:normalized(navigator.language));
+ // Primeiro acesso: localização aproximada por IP; falhas mantêm o idioma do navegador.
+ // A preferência manual tem prioridade e nunca é substituída pela geolocalização.
+ if(!manualChoice){
+  const countryToLanguage=(country)=>{
+   country=String(country||'').toUpperCase();
+   if(['BR','PT','AO','MZ','CV','GW','ST','TL'].includes(country))return 'pt-BR';
+   if(['ES','MX','AR','CL','CO','PE','VE','UY','PY','BO','EC','CR','PA','GT','HN','NI','SV','DO','CU','PR','GQ'].includes(country))return 'es';
+   if(['GB','US','CA','AU','NZ','IE','ZA','JM','TT','BB','BZ','GY'].includes(country))return 'en';
+   return null; // Outros países: respeitar idioma preferido do navegador.
+  };
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),2500);
+  fetch('https://ipwho.is/',{signal:controller.signal,cache:'no-store'})
+   .then(r=>{if(!r.ok)throw Error('IP lookup unavailable');return r.json()})
+   .then(data=>{if(manualChoice||data.success===false)return;const detected=countryToLanguage(data.country_code);if(detected)apply(detected)})
+   .catch(()=>{})
+   .finally(()=>clearTimeout(timeout));
+ }
+ trigger.addEventListener('click',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden))});
+ menu.addEventListener('click',e=>{const b=e.target.closest('[data-lang]');if(!b)return;manualChoice=true;apply(b.dataset.lang);try{localStorage.setItem('izgame-language',b.dataset.lang)}catch(e){}menu.hidden=true;trigger.setAttribute('aria-expanded','false')});
+ document.addEventListener('click',e=>{if(!e.target.closest('.iz-lang-wrap')){menu.hidden=true;trigger.setAttribute('aria-expanded','false')}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;trigger.setAttribute('aria-expanded','false')}});
 })();
 </script>
 </body>
