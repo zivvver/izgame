@@ -698,7 +698,21 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 .forum-note{color:var(--text-muted);font-size:12px;margin-top:14px}
 @media(max-width:800px){.forum-layout{grid-template-columns:1fr}.forum-shell{padding-top:42px}}
 @media(max-width:680px){.forum-panel{padding:20px}}
-</style></head>
+</style><style>
+/* IZGAME: sincronização visual do fórum com a página principal */
+/* Valores idênticos aos utilizados no index.html, sem alterar a página inicial. */
+:root{color-scheme:dark;--cyan:#00D2FF;--cyan-hover:#33dcff;--cyan-dim:rgba(0,210,255,.12);--cyan-border:rgba(0,210,255,.28);--bg:#07090D;--surface:#0F1318;--surface-card:#151A22;--surface-hover:#1C232E;--border:#222935;--border-light:#2D3747;--text:#F3F6FA;--text-secondary:#9BA8BA;--text-muted:#677587}
+body{background-color:#07090D;color:#F3F6FA}
+.forum-panel{background:#0F1318;border-color:#222935;color:#F3F6FA}
+.forum-panel h2,.forum-category h3{color:#F3F6FA}
+.forum-intro p,.forum-category p,.forum-side-note{color:#9BA8BA}
+.forum-category{border-color:#222935}
+.forum-search{background:#090d12;color:#F3F6FA;border-color:#2D3747}
+.forum-category-icon{background:rgba(0,210,255,.12);border-color:rgba(0,210,255,.28);color:#00D2FF}
+.forum-category .arrow{color:#677587}
+.forum-intro .sub-tag{color:#00D2FF}
+</style>
+</head>
 <body>
 <canvas aria-hidden="true" id="izgame-dots"></canvas>
 <header class="header-wrap">
