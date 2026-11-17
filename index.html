@@ -918,7 +918,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <p id="auth-description">Acesse sua conta para continuar.</p>
 <form id="auth-form">
 <label class="auth-field" hidden="" id="auth-name-field">Nome de usuário<input autocomplete="username" id="auth-name" maxlength="20" minlength="3" pattern="[A-Za-z0-9_]+" placeholder="Seu nickname" type="text"/></label>
-<label class="auth-field">E-mail<input autocomplete="email" id="auth-email" placeholder="voce@exemplo.com" required="" type="email"/></label>
+<label class="auth-field" id="auth-identifier-field">Nome de usuário ou e-mail<input autocomplete="username" id="auth-email" placeholder="Seu usuário ou e-mail" required="" type="text"/></label>
 <label class="auth-field">Senha<input autocomplete="current-password" id="auth-password" minlength="8" placeholder="Sua senha" required="" type="password"/></label>
 <label id="remember-label" style="display:flex;align-items:center;gap:9px;color:#a7b5c5;font-size:12px;margin:12px 0"><input checked="" id="auth-remember" type="checkbox"/> Lembrar meu e-mail e manter conectado</label>
 <button class="btn-primary auth-submit" id="auth-submit" type="submit">Entrar</button>
@@ -948,6 +948,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
   const nameField=document.getElementById('auth-name-field');
   const nameInput=document.getElementById('auth-name');
   const email=document.getElementById('auth-email');
+  const identifierField=document.getElementById('auth-identifier-field');
   const password=document.getElementById('auth-password');
   const submit=document.getElementById('auth-submit');
   const toggle=document.getElementById('auth-switch');
@@ -960,7 +961,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
   const checkExpiry=async()=>{if(!client)return;const last=Number(localStorage.getItem(LAST)||0);if(last&&Date.now()-last>48*60*60*1000){await client.auth.signOut();localStorage.removeItem(LAST);trigger.textContent='Entrar'}};
   window.addEventListener('pageshow',checkExpiry);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkExpiry()});
-  forgot.addEventListener('click',async()=>{if(!client){message('Autenticação indisponível.',true);return}if(!email.value.trim()){message('Digite seu e-mail primeiro.',true);return}const {error}=await client.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:location.origin+'/index.html?reset=1'});message(error?error.message:'Enviamos um link de recuperação para seu e-mail.',!!error)});
+  forgot.addEventListener('click',async()=>{if(!client){message('Autenticação indisponível.',true);return}if(!email.value.trim()||!email.value.includes('@')){message('Para recuperar a senha, digite seu e-mail cadastrado.',true);return}const {error}=await client.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:location.origin+'/index.html?reset=1'});message(error?error.message:'Enviamos um link de recuperação para seu e-mail.',!!error)});
   
   let mode='login',client=null,lastFocus=null;
   const configured=SUPABASE_URL.startsWith('https://') && SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
@@ -970,6 +971,10 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
     mode=next;heading.textContent=next==='register'?'Criar conta':'Entrar no IZGAME';
     desc.textContent=next==='register'?'Crie sua conta com e-mail e senha.':'Acesse sua conta para continuar.';
     nameField.hidden=next!=='register';nameInput.required=next==='register';
+    identifierField.firstChild.textContent=next==='register'?'E-mail':'Nome de usuário ou e-mail';
+    email.type=next==='register'?'email':'text';
+    email.placeholder=next==='register'?'voce@exemplo.com':'Seu usuário ou e-mail';
+    email.autocomplete=next==='register'?'email':'username';
     password.autocomplete=next==='register'?'new-password':'current-password';
     submit.textContent=next==='register'?'Criar conta':'Entrar';
     toggle.textContent=next==='register'?'Já tem conta? Entrar':'Não tem conta? Criar conta';
@@ -1021,7 +1026,9 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
         if(error)throw error;
         if(data.session){localStorage.setItem(LAST,String(Date.now()));hide();if(loginNext)location.href=loginNext}else message('Cadastro enviado. Verifique seu e-mail para confirmar a conta.');
       }else{
-        const {error}=await client.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+        const identifier=email.value.trim();
+        if(!identifier.includes('@'))throw Error('O login por nome de usuário será ativado quando configurarmos a consulta segura no backend. Por enquanto, entre com seu e-mail.');
+        const {error}=await client.auth.signInWithPassword({email:identifier,password:password.value});
         if(error)throw error;localStorage.setItem(LAST,String(Date.now()));if(remember.checked)localStorage.setItem(REM,email.value.trim());else localStorage.removeItem(REM);hide();if(loginNext)location.href=loginNext;
       }
     }catch(err){message(err.message||'Não foi possível autenticar.',true)}
