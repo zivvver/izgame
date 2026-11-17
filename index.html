@@ -570,6 +570,16 @@ footer {
   gap: 12px;
 }
 
+
+/* IZGAME — recursos de jogo responsável no rodapé */
+.footer-responsible{border-top:1px solid var(--border);padding:27px 0 29px;margin-top:4px}
+.footer-responsible h4{font-family:var(--font-heading);font-size:16px;color:var(--text);margin-bottom:8px}
+.footer-responsible p{font-size:12px;color:var(--text-secondary);line-height:1.8;max-width:850px}
+.footer-responsible-links{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0 12px}
+.footer-responsible-links a{display:inline-flex;align-items:center;border:1px solid var(--border-light);border-radius:9px;background:var(--surface-card);color:var(--text-secondary);font-size:12px;font-weight:600;padding:9px 12px;transition:color .2s,border-color .2s}
+.footer-responsible-links a:hover,.footer-responsible-links a:focus-visible{color:var(--cyan);border-color:var(--cyan-border)}
+.footer-responsible .footer-responsible-note{font-size:11px;color:var(--text-muted)}
+
 /* Responsive */
 @media (max-width: 992px) {
   .room-card {
@@ -918,7 +928,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 <div class="footer-col">
 <h4>Institucional</h4>
 <ul>
-<li><a href="#criterios">Jogo Responsável</a></li>
+<li><a href="jogo-responsavel.html">Jogo Responsável</a></li>
 <li><a href="#criterios">Termos de Uso</a></li>
 <li><a href="#criterios">Política de Privacidade</a></li>
 <li><a href="mailto:contato@izgame.com.br">Contato</a></li>
@@ -926,6 +936,18 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
 </div>
 </div>
 </div>
+<section class="footer-responsible" aria-labelledby="footer-responsible-title">
+<h4 id="footer-responsible-title">Jogo Responsável</h4>
+<p>O poker envolve riscos financeiros. Estabeleça limites, evite jogar para recuperar perdas e procure apoio caso o jogo esteja prejudicando sua vida. Conteúdo destinado a maiores de 18 anos.</p>
+<div class="footer-responsible-links">
+<a href="https://gamblingtherapy.org/" target="_blank" rel="noopener noreferrer">Gambling Therapy ↗</a>
+<a href="https://www.gambleaware.org/" target="_blank" rel="noopener noreferrer">GambleAware ↗</a>
+<a href="https://www.gamcare.org.uk/" target="_blank" rel="noopener noreferrer">GamCare ↗</a>
+<a href="https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/autoexclusao/perguntas-frequentes-autoexclusao" target="_blank" rel="noopener noreferrer">Autoexclusão — Brasil ↗</a>
+<a href="jogo-responsavel.html">Saiba mais sobre jogo responsável</a>
+</div>
+<p class="footer-responsible-note">Recursos externos de informação e apoio. A indicação não representa parceria ou endosso institucional. A autoexclusão federal aplica-se às plataformas abrangidas pelo serviço.</p>
+</section>
 <div class="footer-bottom">
 <div>© 2026 IZGAME. Todos os direitos reservados. Conteúdo estritamente informativo para maiores de 18 anos.</div>
 <div style="color: var(--cyan);">Informação para jogar melhor</div>
