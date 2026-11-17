@@ -211,7 +211,68 @@ body.iz-light .nav-links a:hover{color:#008db7}
 body.iz-light .btn-primary{background:#008db7;color:#fff;box-shadow:0 4px 14px rgba(0,153,198,.2)}
 body.iz-light .btn-primary:hover{background:#007a9e}
 body.iz-light .iz-theme-toggle{border-color:#c8d4e0}
-</style></head><body><canvas aria-hidden="true" id="izgame-dots"></canvas><header class="header-wrap">
+</style><style id="izgame-theme-repair">
+/* O tema do simulador usa as mesmas classes e a mesma preferência do site principal. */
+html:has(body.iz-light){color-scheme:light}
+body.iz-light{color-scheme:light;--bg:#f7f9fc;--panel:#ffffff;--panel2:#edf2f7;--border:#dce4ed;--text:#172331;--muted:#4c5c70;--blue:#008db7;--green:#087f5b;background-color:var(--bg)!important;color:var(--text)!important}
+body.iz-light .card,body.iz-light .stat{background:var(--panel);border-color:var(--border);color:var(--text)}
+body.iz-light .field input,body.iz-light .field select,body.iz-light .pill,body.iz-light .freq>div{background:var(--panel2);color:var(--text);border-color:var(--border)}
+body.iz-light .notice,body.iz-light .details{border-color:var(--border)}
+body.iz-light .header-wrap .nav-inner{background:rgba(255,255,255,.95)}
+
+/* IZGAME: contornos no tema claro, iguais ao site principal */
+body.iz-light {
+  --border: #afc0d1;
+  --border-light: #93abc0;
+  --cyan-border: rgba(0,113,160,.53);
+}
+body.iz-light .card,
+body.iz-light .stat,
+body.iz-light .notice {
+  border-color: #adbed0;
+}
+body.iz-light .field input,
+body.iz-light .field select,
+body.iz-light .pill,
+body.iz-light .tag,
+body.iz-light .freq > div {
+  border: 1px solid #adbed0;
+}
+body.iz-light .field input:focus,
+body.iz-light .field select:focus {
+  border-color: #0071a0;
+  box-shadow: 0 0 0 2px rgba(0,113,160,.10);
+}
+body.iz-light .card:hover,
+body.iz-light .stat:hover {
+  border-color: #93abc0;
+}
+</style>
+<script id="izgame-theme-controller">
+(function(){
+ const KEY='izgame_theme';
+ function apply(theme,save){
+  const light=theme==='light';
+  document.body.classList.toggle('iz-light',light);
+  document.body.classList.toggle('light',light);
+  const btn=document.getElementById('iz-theme-toggle');
+  if(btn){btn.setAttribute('aria-pressed',String(light));btn.setAttribute('aria-label',light?'Ativar tema escuro':'Ativar tema claro');btn.title=light?'Ativar tema escuro':'Ativar tema claro';}
+  if(save){try{localStorage.setItem(KEY,light?'light':'dark')}catch(e){}}
+  if(typeof window.izgameRedrawChart==='function')window.izgameRedrawChart();
+ }
+ function saved(){try{return localStorage.getItem(KEY)==='light'?'light':'dark'}catch(e){return 'dark'}}
+ function init(){
+  apply(saved(),false);
+  const btn=document.getElementById('iz-theme-toggle');
+  if(btn)btn.addEventListener('click',()=>apply(document.body.classList.contains('iz-light')?'dark':'light',true));
+  window.addEventListener('storage',e=>{if(e.key===KEY)apply(saved(),false)});
+  window.addEventListener('pageshow',()=>apply(saved(),false));
+  window.addEventListener('focus',()=>apply(saved(),false));
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+</head><body><canvas aria-hidden="true" id="izgame-dots"></canvas><header class="header-wrap">
 <nav class="nav-inner">
 <a class="brand" href="#inicio">
 <svg fill="none" viewbox="0 0 150 110" xmlns="http://www.w3.org/2000/svg">
@@ -248,22 +309,7 @@ const $=id=>document.getElementById(id), N=id=>Number($(id).value)||0;
 function setupRooms(){const room=$('room');room.innerHTML=Object.entries(STRUCTURES).map(([key,r])=>`<option value="${key}">${r.label}${r.estimated?' — rake estimado':''}</option>`).join('');room.value='PokerStars';room.addEventListener('change',()=>populateStakes());$('buy').addEventListener('change',applyRake);populateStakes(1)}
 function populateStakes(preferred){const structure=STRUCTURES[$('room').value],buy=$('buy');buy.innerHTML=structure.stakes.map(([stake])=>`<option value="${stake}">$${stake.toLocaleString('en-US',{maximumFractionDigits:2})}</option>`).join('');if(preferred&&structure.stakes.some(([v])=>v===preferred))buy.value=String(preferred);applyRake()}
 function applyRake(){const structure=STRUCTURES[$('room').value],stake=Number($('buy').value),entry=structure.stakes.find(([v])=>v===stake);$('rake').value=entry?entry[1]:'';$('rakeSource').textContent=structure.source+(structure.estimated?' · Estimativa, não validada.':' · Valores conforme prints, sujeitos a mudanças.');paths=null;calculate();draw();$('chartStatus').textContent='Estrutura alterada. Execute uma nova simulação.'}
-const fmt=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'USD'});const pct=n=>(n*100).toFixed(2).replace('.',',')+'%';let paths=null;function calculate(){const c=Math.max(-314,Math.min(628,N('cev'))),r=Math.max(0,Math.min(.99,N('rake')/100)),b=Math.max(0,N('buy')),rb=Math.max(0,Math.min(1,N('rb')/100)),games=Math.max(1,Math.floor(N('games')));const p=(314+c)/942;let p2=33.3525-.0438095238*c;p2=Math.max(0,Math.min(100-p*100,p2));const p3=100-p*100-p2;const roi=3*p*(1-r)-1;const profit=games*b*(roi+rb*r);$('p1').textContent=pct(p);$('p2').textContent=p2.toFixed(2).replace('.',',')+'%';$('p3').textContent=p3.toFixed(2).replace('.',',')+'%';$('roi').textContent=pct(roi);$('roi').className=roi>=0?'positive':'';$('profit').textContent=fmt(profit);$('profit').className=profit>=0?'positive':'';$('breakeven').textContent=(314*r/(1-r)).toFixed(2).replace('.',',');return {p,r,b,rb,games,roi,profit}}function simulate(){const {p,r,b,rb,games,roi}=calculate(),count=6,steps=120,all=[];for(let k=0;k<count;k++){let val=0;const arr=[0];let last=0;for(let i=1;i<=steps;i++){const next=Math.floor(i*games/steps);for(let j=last;j<next;j++)val+=b*((Math.random()<p?3*(1-r):0)-1+rb*r);arr.push(val)}last=next}all.push(arr)}all.push(Array.from({length:steps+1},(_,i)=>games*i/steps*b*(roi+rb*r)));paths=all;draw();$('chartStatus').textContent=`${count} trajetórias aleatórias de ${games.toLocaleString('pt-BR')} jogos • distribuição simplificada, sem multiplicadores reais.`}function draw(){const c=$('chart'),ctx=c.getContext('2d'),rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height,pad={l:62,r:14,t:20,b:35};ctx.clearRect(0,0,w,h);let values=paths?paths.flat():[-100,0,100];let min=Math.min(...values),max=Math.max(...values);if(max===min){max+=1;min-=1}const range=max-min;min-=range*.12;max+=range*.12;const X=i=>pad.l+i/120*(w-pad.l-pad.r),Y=v=>pad.t+(max-v)/(max-min)*(h-pad.t-pad.b);ctx.font='11px system-ui';ctx.textAlign='right';for(let i=0;i<=4;i++){let v=min+(max-min)*i/4,y=Y(v);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--border');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('$'+Math.round(v),pad.l-10,y+4)}if(paths){paths.forEach((a,j)=>{ctx.strokeStyle=j===paths.length-1?getComputedStyle(document.body).getPropertyValue('--green'):getComputedStyle(document.body).getPropertyValue('--blue');ctx.globalAlpha=j===paths.length-1?1:.42;ctx.lineWidth=j===paths.length-1?3:1.7;ctx.beginPath();a.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));ctx.stroke()});ctx.globalAlpha=1}else{ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('Aguardando simulação',w/2,h/2)}ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('0',pad.l,h-9);ctx.fillText('Jogos',w/2,h-9);ctx.fillText(N('games').toLocaleString('pt-BR'),w-pad.r-20,h-9)}['cev','rb','games'].forEach(id=>$(id).addEventListener('input',()=>{paths=null;calculate();draw();$('chartStatus').textContent='Parâmetros alterados. Execute uma nova simulação.'}));$('run').onclick=simulate;/* Sincronização de tema com a página principal: chave e classe oficiais. */
-const THEME_KEY='izgame_theme';
-function applySharedTheme(theme, persist=false){
- const light=theme==='light';
- document.body.classList.toggle('light',light);
- document.body.classList.toggle('iz-light',light);
- const button=$('iz-theme-toggle');
- if(button){button.setAttribute('aria-pressed',String(light));button.setAttribute('aria-label',light?'Ativar tema escuro':'Ativar tema claro');button.title=light?'Mudar para tema escuro':'Mudar para tema claro';}
- if(persist){try{localStorage.setItem(THEME_KEY,light?'light':'dark')}catch(e){}}
- draw();
-}
-try{applySharedTheme(localStorage.getItem(THEME_KEY)==='light'?'light':'dark')}catch(e){applySharedTheme('dark')}
-$('iz-theme-toggle').addEventListener('click',()=>applySharedTheme(document.body.classList.contains('iz-light')?'dark':'light',true));
-window.addEventListener('storage',event=>{if(event.key===THEME_KEY)applySharedTheme(event.newValue==='light'?'light':'dark')});
-window.addEventListener('pageshow',()=>{try{applySharedTheme(localStorage.getItem(THEME_KEY)==='light'?'light':'dark')}catch(e){}});
-window.addEventListener('focus',()=>{try{applySharedTheme(localStorage.getItem(THEME_KEY)==='light'?'light':'dark')}catch(e){}});addEventListener('resize',draw);setupRooms();calculate();draw();
+const fmt=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'USD'});const pct=n=>(n*100).toFixed(2).replace('.',',')+'%';let paths=null;function calculate(){const c=Math.max(-314,Math.min(628,N('cev'))),r=Math.max(0,Math.min(.99,N('rake')/100)),b=Math.max(0,N('buy')),rb=Math.max(0,Math.min(1,N('rb')/100)),games=Math.max(1,Math.floor(N('games')));const p=(314+c)/942;let p2=33.3525-.0438095238*c;p2=Math.max(0,Math.min(100-p*100,p2));const p3=100-p*100-p2;const roi=3*p*(1-r)-1;const profit=games*b*(roi+rb*r);$('p1').textContent=pct(p);$('p2').textContent=p2.toFixed(2).replace('.',',')+'%';$('p3').textContent=p3.toFixed(2).replace('.',',')+'%';$('roi').textContent=pct(roi);$('roi').className=roi>=0?'positive':'';$('profit').textContent=fmt(profit);$('profit').className=profit>=0?'positive':'';$('breakeven').textContent=(314*r/(1-r)).toFixed(2).replace('.',',');return {p,r,b,rb,games,roi,profit}}function simulate(){const {p,r,b,rb,games,roi}=calculate(),count=6,steps=120,all=[];for(let k=0;k<count;k++){let val=0;const arr=[0];let last=0;for(let i=1;i<=steps;i++){const next=Math.floor(i*games/steps);for(let j=last;j<next;j++)val+=b*((Math.random()<p?3*(1-r):0)-1+rb*r);arr.push(val)}last=next}all.push(arr)}all.push(Array.from({length:steps+1},(_,i)=>games*i/steps*b*(roi+rb*r)));paths=all;draw();$('chartStatus').textContent=`${count} trajetórias aleatórias de ${games.toLocaleString('pt-BR')} jogos • distribuição simplificada, sem multiplicadores reais.`}function draw(){const c=$('chart'),ctx=c.getContext('2d'),rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height,pad={l:62,r:14,t:20,b:35};ctx.clearRect(0,0,w,h);let values=paths?paths.flat():[-100,0,100];let min=Math.min(...values),max=Math.max(...values);if(max===min){max+=1;min-=1}const range=max-min;min-=range*.12;max+=range*.12;const X=i=>pad.l+i/120*(w-pad.l-pad.r),Y=v=>pad.t+(max-v)/(max-min)*(h-pad.t-pad.b);ctx.font='11px system-ui';ctx.textAlign='right';for(let i=0;i<=4;i++){let v=min+(max-min)*i/4,y=Y(v);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--border');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('$'+Math.round(v),pad.l-10,y+4)}if(paths){paths.forEach((a,j)=>{ctx.strokeStyle=j===paths.length-1?getComputedStyle(document.body).getPropertyValue('--green'):getComputedStyle(document.body).getPropertyValue('--blue');ctx.globalAlpha=j===paths.length-1?1:.42;ctx.lineWidth=j===paths.length-1?3:1.7;ctx.beginPath();a.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));ctx.stroke()});ctx.globalAlpha=1}else{ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('Aguardando simulação',w/2,h/2)}ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('0',pad.l,h-9);ctx.fillText('Jogos',w/2,h-9);ctx.fillText(N('games').toLocaleString('pt-BR'),w-pad.r-20,h-9)}['cev','rb','games'].forEach(id=>$(id).addEventListener('input',()=>{paths=null;calculate();draw();$('chartStatus').textContent='Parâmetros alterados. Execute uma nova simulação.'}));$('run').onclick=simulate;window.izgameRedrawChart=draw;addEventListener('resize',draw);setupRooms();calculate();draw();
 </script><script>
 (()=>{const h=document.querySelector('.header-wrap');if(!h)return;
 const lang=h.querySelector('#iz-lang-trigger'),menu=h.querySelector('#iz-lang-menu');
