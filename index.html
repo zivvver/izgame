@@ -774,6 +774,28 @@ body.iz-light .iz-mobile-toggle,body.iz-light .iz-mobile-dropdown{background:rgb
 body.iz-light .iz-lang-menu{box-shadow:0 12px 30px rgba(20,40,60,.12)}
 body.iz-light .iz-theme-toggle{background:transparent}
 @media(max-width:680px){.iz-theme-toggle{width:32px;height:32px}.iz-theme-half svg{width:17px;height:17px;min-width:17px}}
+
+/* Transições discretas para a mudança manual de idioma e aparência. */
+body.iz-theme-ready,body.iz-theme-ready .nav-inner,
+body.iz-theme-ready .room-card,body.iz-theme-ready .feature-card,
+body.iz-theme-ready .guide-card,body.iz-theme-ready .reward-card,
+body.iz-theme-ready .room-logo-box,body.iz-theme-ready .btn-primary,
+body.iz-theme-ready .btn-secondary,body.iz-theme-ready .section-title,
+body.iz-theme-ready .hero h1,body.iz-theme-ready .hero h1 span,
+body.iz-theme-ready .brand,body.iz-theme-ready .brand span,
+body.iz-theme-ready .footer,body.iz-theme-ready .iz-theme-toggle,
+body.iz-theme-ready section,body.iz-theme-ready article,
+body.iz-theme-ready .card,body.iz-theme-ready .stat-val,
+body.iz-theme-ready .room-name-wrap h3 {
+ transition-property:background-color,color,border-color,box-shadow,-webkit-text-fill-color;
+ transition-duration:.48s;
+ transition-timing-function:cubic-bezier(.22,1,.36,1);
+}
+body.iz-language-changing [data-i18n]{opacity:.3;transform:translateY(2px)}
+body [data-i18n]{transition:opacity .19s ease,transform .19s ease}
+@media(prefers-reduced-motion:reduce){
+ body.iz-theme-ready,body.iz-theme-ready *,body [data-i18n]{transition-duration:0s!important}
+}
 </style>
 <style>
 /* Logos oficiais fornecidos pelo projeto: arquivos locais e fundos personalizados */
@@ -1204,6 +1226,18 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
  };
  const supported=['pt-BR','en','es'];
  function normalized(code){code=String(code||'').toLowerCase();return code.startsWith('es')?'es':code.startsWith('en')?'en':'pt-BR'}
+ let languageSwapTimer=null;
+ function animateLanguage(lang){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){apply(lang);return}
+  clearTimeout(languageSwapTimer);
+  document.body.classList.remove('iz-language-changing');
+  void document.body.offsetWidth;
+  document.body.classList.add('iz-language-changing');
+  languageSwapTimer=setTimeout(()=>{
+   apply(lang);
+   document.body.classList.remove('iz-language-changing');
+  },150);
+ }
  function apply(lang){
   if(!supported.includes(lang))lang='pt-BR';
   document.documentElement.lang=lang;
@@ -1275,7 +1309,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
  menu.addEventListener('click',async e=>{
   const b=e.target.closest('[data-lang]');if(!b)return;
   const lang=b.dataset.lang;if(!supported.includes(lang))return;
-  ++visitSerial;guestChoiceThisVisit=true;apply(lang);
+  ++visitSerial;guestChoiceThisVisit=true;animateLanguage(lang);
   menu.hidden=true;trigger.setAttribute('aria-expanded','false');
   if(activeUser&&authClient){
    try{
@@ -1303,6 +1337,7 @@ section[id], [id="inicio"], [id="salas"], [id="criterios"], [id="guias"], [id="p
  }
  let saved='dark';try{saved=localStorage.getItem(key)||'dark'}catch(e){}
  setTheme(saved);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('iz-theme-ready')));
  button.addEventListener('click',()=>setTheme(document.body.classList.contains('iz-light')?'dark':'light'));
 })();
 </script>
