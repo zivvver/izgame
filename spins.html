@@ -12,6 +12,7 @@
 body.light{background-image:radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,180,225,.09),transparent 70%),radial-gradient(circle,rgba(0,120,170,.10) .65px,transparent .85px)}
 @media(max-width:1240px){header{margin-left:20px;margin-right:20px}}
 @media(max-width:560px){header{min-height:62px;padding:10px 18px;margin:12px 12px 0}.logo{font-size:21px}}
+.chart-interactive{position:relative}.chart-tooltip{position:absolute;pointer-events:none;z-index:5;min-width:146px;max-width:180px;padding:10px 12px;border:1px solid var(--border);border-radius:11px;background:var(--panel);color:var(--text);box-shadow:0 10px 28px rgba(0,0,0,.28);font-size:12px;display:grid;gap:5px}.chart-tooltip[hidden]{display:none}.chart-tooltip span{color:var(--muted)}.chart-tooltip b{font-size:15px}.chart-interactive canvas{cursor:crosshair}
 </style><style>.header-wrap {
   position: sticky;
   top: 16px;
@@ -341,6 +342,143 @@ body.iz-light .stat:hover {
   text-align: center;
 }
 @media(max-width:560px){.stats .stat{min-height:112px;padding:12px 8px}}
+</style><style>
+/* Alternância compacta entre resultados antes e depois do rakeback */
+.result-mode{display:flex;align-items:center;justify-content:center;gap:3px;width:max-content;margin:12px auto -6px;padding:3px;background:var(--panel);border:1px solid var(--border);border-radius:999px;position:relative;z-index:2}
+.mode-option{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:6px 19px;font-size:11px;letter-spacing:.07em;font-weight:800;line-height:1.2;transition:background .18s,color .18s}
+.mode-option.active{background:var(--blue);color:#061221}
+.mode-option:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.stats{margin-top:13px}
+</style><style>
+/* IZGAME — painel reorganizado */
+aside.stack .two {grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:12px}
+aside.stack .two .field {min-width:0;margin:0}
+.rake-inline {margin-top:14px;font-size:12px;line-height:1.5}
+.rake-inline strong {color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+aside.stack section:nth-child(2) .field:first-of-type {margin-top:0}
+aside.stack section:nth-child(2) .freq {margin-top:10px}
+aside.stack section:nth-child(2) .freq + #run {margin-top:18px}
+aside.stack section:nth-child(2) .field {margin-top:13px;margin-bottom:0}
+aside.stack section:nth-child(2) .field + .muted {margin-top:16px !important}
+aside.stack section:nth-child(2) .freq strong {font-variant-numeric:tabular-nums}
+</style><style>
+/* Controles de visibilidade do gráfico */
+.legend-toggle{appearance:none;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1px solid transparent;border-radius:9px;padding:7px 9px;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;transition:background .2s,border-color .2s,color .2s,opacity .2s}
+.legend-toggle:hover,.legend-toggle:focus-visible{background:color-mix(in srgb,var(--blue) 9%,transparent);border-color:color-mix(in srgb,var(--blue) 35%,var(--border));color:var(--text);outline:none}
+.legend-toggle .dot{margin-right:0;box-shadow:0 0 10px color-mix(in srgb,var(--blue) 65%,transparent);transition:opacity .2s,filter .2s,box-shadow .2s}
+.legend-toggle.exp .dot{box-shadow:0 0 10px rgba(16,185,129,.55)}
+.legend-toggle[aria-pressed="false"]{opacity:.55}
+.legend-toggle[aria-pressed="false"] .dot{filter:grayscale(1);opacity:.35;box-shadow:none}
+.layout{grid-template-columns:260px minmax(0,1fr) 250px;align-items:start}
+.chart-insights{padding:20px 18px;display:grid;gap:16px;align-content:start}
+.chart-insights h2{margin:0 0 2px;font-size:17px}
+.insight{display:flex;flex-direction:column;gap:5px;border-bottom:1px solid var(--border);padding-bottom:14px;min-width:0}
+.insight>span{font-size:12px;color:var(--muted);line-height:1.4}
+.insight strong{font-size:22px;line-height:1.25;letter-spacing:-.04em;overflow-wrap:anywhere}
+.insight small{color:var(--muted);font-size:11px;line-height:1.4}
+.insight-note{font-size:11px;color:var(--muted);line-height:1.65;margin:0}
+@media(max-width:1100px){.layout{grid-template-columns:270px minmax(0,1fr)}.chart-insights{grid-column:2;grid-row:2}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.chart-insights{grid-column:auto;grid-row:auto}.legend{gap:5px}}
+</style><style>
+/* IZGAME · espaçamento e responsividade refinados */
+.layout{grid-template-columns:minmax(240px,260px) minmax(0,1fr) minmax(245px,260px);column-gap:20px;row-gap:20px;align-items:start}
+.layout > *{min-width:0}
+.results-column{min-width:0}
+.stack{gap:20px}
+.results-column>.card,.results-column>.stats{margin-top:20px}
+.results-column>.chart-card{margin-top:0}
+.chart-insights{padding:24px 22px;gap:0;min-height:0;overflow:visible}
+.chart-insights>.eyebrow{margin-bottom:9px}
+.chart-insights h2{font-size:18px;line-height:1.3;margin:0 0 15px}
+.chart-insights .insight{padding:13px 0 14px;gap:6px}
+.chart-insights .insight>span{font-size:12px}
+.chart-insights .insight strong{font-size:24px;font-variant-numeric:tabular-nums}
+.chart-insights .insight small{font-size:11px}
+.insight-summary{display:grid;grid-template-columns:1fr;gap:10px;padding:14px 0;border-block:1px solid var(--border);margin-bottom:3px}
+.insight-mini{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.insight-mini span{font-size:11px;color:var(--muted)}
+.insight-mini strong{font-size:12px;text-align:right;font-weight:750;color:var(--text);font-variant-numeric:tabular-nums}
+.chart-insights .insight-note{padding-top:14px;font-size:11px;line-height:1.55}
+.chart-card{min-width:0}
+.chart-interactive{min-width:0}
+#chart{max-width:100%;touch-action:pan-y}
+@media(max-width:1180px){
+ .layout{grid-template-columns:minmax(225px,260px) minmax(0,1fr);gap:18px}
+ .chart-insights{grid-column:2;grid-row:2;height:auto!important;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;align-items:start}
+ .chart-insights>.eyebrow,.chart-insights>h2,.chart-insights>.insight-summary,.chart-insights>.insight-note{grid-column:1/-1}
+ .chart-insights>.insight-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .chart-insights .insight{padding:13px 0}
+}
+@media(max-width:800px){
+ main{padding:26px 18px 56px}
+ .layout{grid-template-columns:minmax(0,1fr);gap:16px}
+ .stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+ .results-column,.chart-insights{grid-column:1;grid-row:auto}
+ .chart-insights{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .chart-card{min-height:0}
+ .stats{gap:12px}
+ .stat{min-width:0;padding:16px 9px}
+ .stat strong{font-size:clamp(17px,3.6vw,25px);overflow-wrap:anywhere}
+ .heading{margin-bottom:20px}
+}
+@media(max-width:580px){
+ main{padding:22px 12px 46px}
+ .stack{grid-template-columns:minmax(0,1fr);gap:12px}
+ .layout{gap:12px}
+ .card{padding:17px;border-radius:15px}
+ .chart-head{align-items:flex-start;flex-direction:column;gap:4px}
+ .chart-head h2{margin:5px 0!important}
+ .legend{width:100%;justify-content:flex-start;gap:6px}
+ .legend-toggle{padding:8px 9px;min-height:36px}
+ #chart{height:250px!important;margin-top:8px}
+ .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
+ .stat{padding:14px 5px;border-radius:12px;min-height:108px}
+ .stat strong{font-size:clamp(14px,4.4vw,22px);letter-spacing:-.05em}
+ .stat small,.stat .stat-subtitle{font-size:10px;line-height:1.3}
+ .chart-insights{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px;padding:18px 16px}
+ .chart-insights .insight-summary{grid-template-columns:1fr;gap:8px}
+ .chart-insights .insight strong{font-size:clamp(18px,5vw,23px)}
+ .chart-insights .insight small{font-size:10px}
+ .chart-insights h2{font-size:17px}
+ .chart-insights .insight-note{font-size:10px}
+ .chart-tooltip{max-width:min(230px,75vw)}
+ #prizeTable{min-width:470px}
+ .heading h1{font-size:clamp(24px,7vw,30px)}
+}
+@media(max-width:365px){.stat strong{font-size:14px}.stat{padding:12px 3px}.chart-insights{grid-template-columns:1fr}.chart-insights>.insight-summary{grid-column:1}.chart-insights>.insight{grid-column:1}}
+</style><style>
+/* IZGAME: colunas laterais simétricas e conteúdo centralizado */
+@media (min-width: 1281px) {
+  main { max-width: 1540px; margin-inline: auto; padding-inline: 28px; }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(290px, 310px) minmax(0, 1fr) minmax(290px, 310px);
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .layout > .stack, .layout > .results-column, .layout > .chart-insights {min-width:0;}
+  .layout > .stack {align-content: start;}
+  .layout > .chart-insights {grid-column: 3; grid-row: 1; height: auto; min-height: 0; align-self: start; box-sizing: border-box; overflow-y: auto;}
+}
+@media (min-width: 801px) and (max-width: 1280px) {
+  main {max-width: 1120px; margin-inline:auto; padding-inline:24px;}
+  .layout {grid-template-columns: minmax(275px, 310px) minmax(0,1fr); gap:22px; align-items:start;}
+  .layout > .chart-insights {grid-column:2; grid-row:2; height:auto; min-height:0;}
+}
+@media (max-width: 800px) {
+  main {width:100%; margin-inline:auto;}
+  .layout {grid-template-columns:minmax(0,1fr); margin-inline:auto;}
+  .layout > .stack,.layout > .results-column,.layout > .chart-insights {grid-column:1; grid-row:auto; width:100%;}
+  .layout > .chart-insights {height:auto; min-height:0;}
+}
+</style><style>
+/* Seletor de sala: mesma linguagem visual dos campos existentes */
+.room-field{margin-top:16px;margin-bottom:14px}
+.room-field select{width:100%;cursor:pointer}
+.room-field select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media(max-width:640px){.room-field{margin-top:14px;margin-bottom:12px}}
 </style></head><body><canvas aria-hidden="true" id="izgame-dots"></canvas><header class="header-wrap">
 <nav class="nav-inner">
 <a class="brand" href="index.html#inicio">
@@ -369,7 +507,7 @@ body.iz-light .stat:hover {
 <a href="index.html#salas">Salas de Poker</a><a href="index.html#criterios">Metodologia</a><a href="index.html#guias">Guias &amp; Estratégia</a><a href="forum.html">Fórum</a><a href="index.html#rewards">Rewards</a>
 </nav>
 </div>
-</header><main><div class="heading"><div><div class="eyebrow">Ferramentas / Simuladores</div><h1>Simulador de Spins <span style="color:var(--blue)">3-Max</span></h1><div class="muted">Explore seu ROI esperado e visualize possíveis trajetórias de resultados.</div></div><span class="tag">VERSÃO EXPERIMENTAL</span></div><div class="layout"><aside class="stack"><section class="card"><h2><span>01</span> Estrutura do torneio</h2><div class="two"><div class="field"><label>Buy-in ($)</label><select id="buy"></select></div><div class="field"><label>Rake (%)</label><input aria-label="Rake automático" id="rake" readonly="" type="number" value="8"/></div></div></section><section class="card"><h2><span>02</span> Desempenho do jogador</h2><div class="field"><label>Expected Chip Value (ChipEV por jogo)</label><input id="cev" step="1" type="number" value="40"/></div><div class="muted" style="margin-top:8px">Stack inicial médio ponderado: <strong id="avgstack">—</strong> fichas</div><div class="muted" style="margin-top:14px">Frequências de colocação estimadas (%)</div><div class="freq"><div><small>1º lugar</small><strong id="p1">—</strong></div><div><small>2º lugar</small><strong id="p2">—</strong></div><div><small>3º lugar</small><strong id="p3">—</strong></div></div><div class="muted" style="margin-top:10px">Conversão heurística de ChipEV em colocações; não é uma relação exata nem uma calibração oficial da PokerStars.</div><div class="field" style="margin-top:15px"><label>Rakeback (%)</label><input id="rb" max="100" min="0" type="number" value="45"/></div><div class="field" style="margin-top:12px"><label>Intervalo de rakeback (jogos)</label><input id="rbinterval" min="1" step="1" type="number" value="100"/></div><div class="field" style="margin-top:12px"><label>Número de jogos</label><input id="games" max="100000" min="1" step="100" type="number" value="1000"/></div><button class="primary" id="run">▶ Executar simulações</button></section></aside><div><section class="card chart-card"><div class="chart-head"><div><div class="eyebrow">Projeção visual</div><h2 style="font-size:19px;margin:9px 0">Trajetórias de lucro</h2></div><div class="legend"><span><i class="dot"></i>Simulações</span><span><i class="dot green"></i>Expectativa</span></div></div><canvas aria-label="Gráfico de resultados simulados" id="chart"></canvas><div class="muted" id="chartStatus">Clique em “Simular resultados” para gerar trajetórias.</div></section><div class="stats"><div class="stat"><small><span class="stat-heading">ROI</span></small><strong id="roi">—</strong><span class="stat-subtitle">esperado antes do rakeback</span></div><div class="stat"><small><span class="stat-heading">Lucro</span></small><strong id="profit">—</strong><span class="stat-subtitle">esperado após rakeback</span></div><div class="stat"><small><span class="stat-heading">ChipEV</span></small><strong id="breakeven">—</strong><span class="stat-subtitle">breakeven</span></div></div><section class="card" style="margin-top:18px"><h2><span>03</span> Multiplicadores e premiações oficiais</h2><div class="muted" style="margin-bottom:12px">Probabilidades por 10 milhões de jogos. Prêmios em USD, para o buy-in selecionado.</div><div style="overflow-x:auto"><table id="prizeTable" style="width:100%;border-collapse:collapse;text-align:right;font-size:12px"><thead><tr><th>Multiplicador</th><th>Frequência</th><th>1º</th><th>2º</th><th>3º</th></tr></thead><tbody></tbody></table></div><p class="muted" id="audit" style="margin-top:10px"></p><p class="muted" style="margin-top:8px">Fonte: <a href="https://www.pokerstars.com/pt-BR/poker/spin-and-go/" rel="noopener noreferrer" style="color:var(--blue)" target="_blank">PokerStars — Spin &amp; Go</a></p></section><details class="card details"><summary>Detalhes da estrutura e metodologia</summary><p>Dados: tabela oficial PokerStars Spin &amp; Go Hold’em, incluindo probabilidades por 10 milhões, pagamentos por colocação, rake e stacks. ROI = soma ponderada das premiações esperadas por colocação / buy-in − 1. As frequências de colocação são aproximadas por uma heurística baseada no ChipEV e na stack inicial média ponderada: P(1º)=1/3+ChipEV/(3×stack média), P(2º)=(1−P(1º))/2+ChipEV/(32×stack média), com limites de 0 a 1. Essa relação não foi calibrada empiricamente e não é uma conversão exata de ChipEV para ROI. Simulações sorteiam multiplicador e colocação de modo independente; pressupõem taxas de colocação iguais em todos os multiplicadores. Rakeback = percentual do rake nominal pago, sem considerar regras específicas de recompensas. O ChipEV breakeven é calculado após o rakeback creditado nos intervalos completos dentro do volume selecionado. Resultados são modelos, não garantias.</p></details><div class="notice">⚠️ Modelo estatístico: a conversão de ChipEV para colocações é uma aproximação não validada; para decisões financeiras, não considere o ROI como uma previsão precisa. A estrutura oficial é real, mas as probabilidades de colocação e o rakeback dependem dos seus dados. Variância pode ser extrema por causa dos jackpots raros.</div></div></div></main><script>
+</header><main><div class="heading"><div><div class="eyebrow">Ferramentas / Simuladores</div><h1>Simulador de Spins <span style="color:var(--blue)">3-Max</span></h1><div class="muted">Explore seu ROI esperado e visualize possíveis trajetórias de resultados.</div></div><span class="tag">VERSÃO EXPERIMENTAL</span></div><div class="layout"><aside class="stack"><section class="card"><h2><span>01</span> Estrutura do torneio</h2><div class="field room-field"><label for="pokerRoom">Sala de poker</label><select id="pokerRoom" aria-label="Selecionar sala de poker"><option value="pokerstars" selected>♠ PokerStars</option><option value="ggpoker" disabled>GG Poker · em breve</option><option value="888poker" disabled>888poker · em breve</option><option value="acr" disabled>ACR · em breve</option><option value="winamax" disabled>Winamax · em breve</option><option value="party" disabled>PartyPoker · em breve</option></select></div><div class="two"><div class="field"><label>Buy-in ($)</label><select id="buy"></select></div><div class="field"><label>ChipEV</label><input id="cev" step="1" type="number" value="40"/></div></div><input id="rake" type="hidden" value="8"/><div class="rake-inline muted">Rake: <strong id="rakeDisplay">8,00%</strong></div></section><section class="card"><h2><span>02</span> Rakeback e desempenho</h2><div class="field" style="margin-top:15px"><label>Rakeback (%)</label><input id="rb" max="100" min="0" type="number" value="45"/></div><div class="field" style="margin-top:12px"><label>Intervalo de rakeback (jogos)</label><input id="rbinterval" min="1" step="1" type="number" value="100"/></div><div class="field" style="margin-top:12px"><label>Número de jogos</label><input id="games" max="100000" min="1" step="100" type="number" value="1000"/></div><div class="muted" style="margin-top:8px">Stack inicial médio ponderado: <strong id="avgstack">—</strong> fichas</div><div class="muted" style="margin-top:14px">Frequências de colocação estimadas (%)</div><div class="freq"><div><small>1º lugar</small><strong id="p1">—</strong></div><div><small>2º lugar</small><strong id="p2">—</strong></div><div><small>3º lugar</small><strong id="p3">—</strong></div></div><button class="primary" id="run">▶ Executar simulações</button></section></aside><div class="results-column"><section class="card chart-card"><div class="chart-head"><div><div class="eyebrow">Projeção visual</div><h2 style="font-size:19px;margin:9px 0">Trajetórias de lucro</h2></div><div class="legend"><button aria-pressed="true" class="legend-toggle sim" id="toggleSim" title="Mostrar ou ocultar 7 simulações" type="button"><i class="dot"></i>7 simulações</button><button aria-pressed="true" class="legend-toggle exp" id="toggleExp" title="Mostrar ou ocultar Expectativa" type="button"><i class="dot green"></i>Expectativa</button></div></div><div class="chart-interactive"><canvas aria-label="Gráfico de resultados simulados" id="chart"></canvas><div class="chart-tooltip" hidden="" id="chartTooltip" role="status"></div></div><div class="muted" id="chartStatus">Clique em “Simular resultados” para gerar trajetórias.</div></section><div aria-label="Visualização dos resultados" class="result-mode" role="group"><button aria-pressed="false" class="mode-option" id="modePre" type="button">PRÉ</button><button aria-pressed="true" class="mode-option active" id="modePost" type="button">PÓS</button></div><div class="stats"><div class="stat"><small><span class="stat-heading">ROI</span></small><strong id="roi">—</strong><span class="stat-subtitle" id="roiSubtitle">esperado após rakeback</span></div><div class="stat"><small><span class="stat-heading">Lucro</span></small><strong id="profit">—</strong><span class="stat-subtitle" id="profitSubtitle">esperado após rakeback</span></div><div class="stat"><small><span class="stat-heading">ChipEV</span></small><strong id="breakeven">—</strong><span class="stat-subtitle" id="beSubtitle">breakeven após rakeback</span></div></div><section class="card" style="margin-top:18px"><h2><span>03</span> Multiplicadores e premiações oficiais</h2><div class="muted" style="margin-bottom:12px">Probabilidades por 10 milhões de jogos. Prêmios em USD, para o buy-in selecionado.</div><div style="overflow-x:auto"><table id="prizeTable" style="width:100%;border-collapse:collapse;text-align:right;font-size:12px"><thead><tr><th>Multiplicador</th><th>Frequência</th><th>1º</th><th>2º</th><th>3º</th></tr></thead><tbody></tbody></table></div><p class="muted" id="audit" style="margin-top:10px"></p><p class="muted" style="margin-top:8px">Fonte: <a href="https://www.pokerstars.com/pt-BR/poker/spin-and-go/" rel="noopener noreferrer" style="color:var(--blue)" target="_blank">PokerStars — Spin &amp; Go</a></p></section><details class="card details"><summary>Detalhes da estrutura e metodologia</summary><p>Dados: tabela oficial PokerStars Spin &amp; Go Hold’em, incluindo probabilidades por 10 milhões, pagamentos por colocação, rake e stacks. ROI = soma ponderada das premiações esperadas por colocação / buy-in − 1. As frequências de colocação são aproximadas por uma heurística baseada no ChipEV e na stack inicial média ponderada: P(1º)=1/3+ChipEV/(3×stack média), P(2º)=(1−P(1º))/2+ChipEV/(32×stack média), com limites de 0 a 1. Essa relação não foi calibrada empiricamente e não é uma conversão exata de ChipEV para ROI. Simulações sorteiam multiplicador e colocação de modo independente; pressupõem taxas de colocação iguais em todos os multiplicadores. Rakeback = percentual do rake nominal pago, sem considerar regras específicas de recompensas. O ChipEV breakeven é calculado após o rakeback creditado nos intervalos completos dentro do volume selecionado. Resultados são modelos, não garantias.</p></details><div class="notice">⚠️ Modelo estatístico: a conversão de ChipEV para colocações é uma aproximação não validada; para decisões financeiras, não considere o ROI como uma previsão precisa. A estrutura oficial é real, mas as probabilidades de colocação e o rakeback dependem dos seus dados. Variância pode ser extrema por causa dos jackpots raros.</div></div><aside class="card chart-insights"><div class="eyebrow">ANÁLISE DAS SIMULAÇÕES</div><h2>Indicadores do gráfico</h2><div class="insight-summary"><div class="insight-mini"><span>Volume analisado</span><strong id="insightVolume">1.000 jogos</strong></div><div class="insight-mini"><span>Cenário exibido</span><strong id="insightMode">PÓS · com rakeback</strong></div><div class="insight-mini"><span>Lucro esperado</span><strong id="insightExpected">—</strong></div></div><div class="insight"><span>Melhor simulação</span><strong id="bestSim">—</strong><small id="bestSimName">Execute uma simulação</small></div><div class="insight"><span>Pior simulação</span><strong id="worstSim">—</strong><small id="worstSimName">Execute uma simulação</small></div><div class="insight"><span>Chance de terminar em prejuízo</span><strong id="lossChance">—</strong><small id="lossContext">Estimativa para o volume escolhido</small></div><div class="insight"><span>Simulações com prejuízo</span><strong id="games95">—</strong><small id="lossSampleNote">Amostra Monte Carlo independente das 7 linhas do gráfico</small></div><p class="insight-note">Risco estimado por sorteios independentes de multiplicadores e colocações. Intervalo de confiança de 95% indica a incerteza amostral; o modelo de ChipEV ainda é experimental. Jackpots raros podem exigir amostras muito maiores.</p></aside></div></main><script>
 (()=>{const h=document.querySelector('.header-wrap');if(!h)return;
 const lang=h.querySelector('#iz-lang-trigger'),menu=h.querySelector('#iz-lang-menu');
 lang?.addEventListener('click',()=>{const open=menu.hidden;menu.hidden=!open;lang.setAttribute('aria-expanded',String(open))});
@@ -404,23 +542,243 @@ const pct=n=>(n*100).toFixed(2).replace('.',',')+'%';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,Number.isFinite(v)?v:a));
 function rows(){const b=N('buy'),d=DATA[String(b)],multipliers=[2,3,4,5,10,25,50,100,d.max];return multipliers.map((m,i)=>{let shares=m<=5?[1,0,0]:m===10?[.8,.2,0]:i===8?[5/6,.1,1/15]:[.8,.12,.08];return {m,f:d.f[i],prizes:shares.map(q=>b*m*q),stack:m<=3?300:m<=5?400:500,minutes:m===2?1:m<=4?2:m<=25?3:m===50?4:5}})}
 let paths=null;
+let simulationConfig=null;
+let animationProgress=1;
+let animationFrame=null;
+let showSimulations=true,showExpectation=true;
+function visibleLine(j){return j===7?showExpectation:showSimulations;}
+function cancelChartAnimation(){if(animationFrame!==null){cancelAnimationFrame(animationFrame);animationFrame=null;}animationProgress=1;}
+function chartValue(line,step){
+ const base=paths[line][step];
+ if(resultMode!=='post'||!simulationConfig)return base;
+ const played=Math.floor(simulationConfig.games*step/120);
+ return base+Math.floor(played/simulationConfig.interval)*simulationConfig.interval*simulationConfig.rebate;
+}
+function chartValues(){return paths?paths.map((line,j)=>line.map((_,i)=>chartValue(j,i))):null;}
+function animateChart(){
+ cancelChartAnimation();animationProgress=0;
+ const start=performance.now(),duration=850;
+ const tick=now=>{const x=Math.min(1,(now-start)/duration);animationProgress=1-Math.pow(1-x,3);draw();if(x<1)animationFrame=requestAnimationFrame(tick);else{animationProgress=1;animationFrame=null;draw();}};
+ animationFrame=requestAnimationFrame(tick);
+}
+let resultMode="post";
 function probabilities(){const rs=rows(),avg=rs.reduce((v,r)=>v+r.f/DEN*r.stack,0),cev=clamp(N('cev'),-avg,2*avg);$('avgstack').textContent=num(avg);const first=clamp(1/3+cev/(3*avg),0,1),second=clamp((1-first)/2+cev/(32*avg),0,1-first);return [first,second,1-first-second]}
 function calculate(){const b=N('buy'),d=DATA[String(b)],p=probabilities(),rs=rows(),rb=clamp(N('rb')/100,0,1),games=Math.max(1,Math.floor(clamp(N('games'),1,100000))),cash=rs.reduce((a,row)=>a+row.f/DEN*row.prizes.reduce((v,x,i)=>v+x*p[i],0),0),roi=cash/b-1,rebate=b*d.r/100*rb,interval=Math.max(1,Math.floor(clamp(N('rbinterval'),1,100000))),paidRebate=Math.floor(games/interval)*interval*rebate,profit=games*(cash-b)+paidRebate;
-['p1','p2','p3'].forEach((id,i)=>$(id).textContent=pct(p[i]));$('roi').textContent=pct(roi);$('roi').className=roi>=0?'positive':'negative';$('profit').textContent=fmt(profit);$('profit').className=profit>=0?'positive':'negative';
+['p1','p2','p3'].forEach((id,i)=>$(id).textContent=pct(p[i]));
+const post=resultMode==='post';
+const shownROI=roi+(post?paidRebate/games/b:0);
+const shownProfit=games*(cash-b)+(post?paidRebate:0);
+$('roi').textContent=pct(shownROI);$('roi').className=shownROI>=0?'positive':'negative';
+$('profit').textContent=fmt(shownProfit);$('profit').className=shownProfit>=0?'positive':'negative';
+$('roiSubtitle').textContent=post?'esperado após rakeback':'esperado antes do rakeback';
+$('profitSubtitle').textContent=post?'esperado após rakeback':'esperado antes do rakeback';
+$('beSubtitle').textContent=post?'breakeven após rakeback':'breakeven antes do rakeback';
 const q=p[1]/Math.max(1e-12,1-p[0]);const winnings=rs.reduce((a,row)=>a+row.f/DEN*row.prizes[0],0),losing=rs.reduce((a,row)=>a+row.f/DEN*(q*row.prizes[1]+(1-q)*row.prizes[2]),0);// Calcula o ChipEV de equilíbrio após o rakeback efetivamente creditado no volume escolhido, usando a mesma heurística de colocações.
 const avg=rs.reduce((v,r)=>v+r.f/DEN*r.stack,0);
-const evAt=(cev)=>{const first=clamp(1/3+cev/(3*avg),0,1),second=clamp((1-first)/2+cev/(32*avg),0,1-first),third=1-first-second;return rs.reduce((a,r)=>a+r.f/DEN*(r.prizes[0]*first+r.prizes[1]*second+r.prizes[2]*third),0)-b+paidRebate/games};
+const evAt=(cev)=>{const first=clamp(1/3+cev/(3*avg),0,1),second=clamp((1-first)/2+cev/(32*avg),0,1-first),third=1-first-second;return rs.reduce((a,r)=>a+r.f/DEN*(r.prizes[0]*first+r.prizes[1]*second+r.prizes[2]*third),0)-b+(post?paidRebate/games:0)};
 let lo=-avg,hi=2*avg,be='—';
 if(evAt(lo)<=0&&evAt(hi)>=0){for(let i=0;i<65;i++){const mid=(lo+hi)/2;if(evAt(mid)<0)lo=mid;else hi=mid;}be=((lo+hi)/2).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' fichas';}
-$('breakeven').textContent=be;$('rake').value=d.r;
+$('breakeven').textContent=be;$('rake').value=d.r; $('rakeDisplay').textContent=Number(d.r).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
 $('audit').textContent='Frequências: '+num(rs.reduce((a,r)=>a+r.f,0))+' / 10.000.000 · Prêmio médio por jogo (3 jogadores): '+fmt(rs.reduce((a,r)=>a+r.f/DEN*r.prizes.reduce((x,y)=>x+y,0),0))+' · Rake nominal: '+fmt(b*d.r/100)+' por entrada.';
 $('prizeTable').querySelector('tbody').innerHTML=rs.map(r=>'<tr>'+[num(r.m)+'x',num(r.f),...r.prizes.map(fmt)].map(v=>'<td style="border-bottom:1px solid var(--border);padding:9px 5px">'+v+'</td>').join('')+'</tr>').join('');
 return {b,rs,p,rb,rebate,interval,games,roi,profit,cash}}
-function simulate(){const v=calculate(),steps=120,count=6,all=[];const cumulative=[];let sum=0;for(const r of v.rs){sum+=r.f/DEN;cumulative.push(sum)}
-for(let k=0;k<count;k++){let val=0,last=0;const arr=[0];for(let i=1;i<=steps;i++){const next=Math.floor(i*v.games/steps);for(let j=last;j<next;j++){const u=Math.random();let idx=cumulative.findIndex(x=>u<x);if(idx<0)idx=v.rs.length-1;const placeU=Math.random(),place=placeU<v.p[0]?0:placeU<v.p[0]+v.p[1]?1:2;val+=v.rs[idx].prizes[place]-v.b;if((j+1)%v.interval===0)val+=v.interval*v.rebate}arr.push(val)}last=next}all.push(arr);all.push(Array.from({length:steps+1},(_,i)=>v.games*i/steps*(v.cash-v.b)+Math.floor((v.games*i/steps)/v.interval)*v.interval*v.rebate));paths=all;draw();$('chartStatus').textContent=`${count} trajetórias de ${num(v.games)} jogos · multiplicadores e pagamentos oficiais · colocações modeladas.`}
-function draw(){const c=$('chart'),ctx=c.getContext('2d'),rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);const w=rect.width,h=rect.height,pad={l:72,r:14,t:20,b:35};ctx.clearRect(0,0,w,h);const values=paths?paths.flat():[-100,0,100];let min=Math.min(...values),max=Math.max(...values);if(max===min){max++;min--}const range=max-min;min-=range*.12;max+=range*.12;const X=i=>pad.l+i/120*(w-pad.l-pad.r),Y=v=>pad.t+(max-v)/(max-min)*(h-pad.t-pad.b);ctx.font='11px system-ui';ctx.textAlign='right';for(let i=0;i<=4;i++){const v=min+(max-min)*i/4,y=Y(v);ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--border');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('$'+Math.round(v),pad.l-10,y+4)}if(paths){paths.forEach((a,j)=>{ctx.strokeStyle=j===paths.length-1?getComputedStyle(document.body).getPropertyValue('--green'):getComputedStyle(document.body).getPropertyValue('--blue');ctx.globalAlpha=j===paths.length-1?1:.42;ctx.lineWidth=j===paths.length-1?3:1.7;ctx.beginPath();a.forEach((v,i)=>i?ctx.lineTo(X(i),Y(v)):ctx.moveTo(X(i),Y(v)));ctx.stroke()});ctx.globalAlpha=1}else{ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('Aguardando simulação',w/2,h/2)}ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');ctx.fillText('0',pad.l,h-9);ctx.fillText('Jogos',w/2,h-9);ctx.fillText(num(clamp(N('games'),1,100000)),w-pad.r-20,h-9)}
+function simulate(){
+ const v=calculate(),steps=120,count=7,all=[];
+ const cumulative=[];let sum=0;
+ for(const r of v.rs){sum+=r.f/DEN;cumulative.push(sum)}
+ for(let k=0;k<count;k++){
+  let val=0,last=0;const arr=[0];
+  for(let i=1;i<=steps;i++){
+   const next=Math.floor(i*v.games/steps);
+   for(let j=last;j<next;j++){
+    const u=Math.random();let idx=cumulative.findIndex(x=>u<x);
+    if(idx<0)idx=v.rs.length-1;
+    const placeU=Math.random(),place=placeU<v.p[0]?0:placeU<v.p[0]+v.p[1]?1:2;
+    val+=v.rs[idx].prizes[place]-v.b;
+    // O rakeback é aplicado somente na visualização PÓS, sem alterar os sorteios.
+   }
+   arr.push(val);
+   last=next;
+  }
+  all.push(arr);
+ }
+ all.push(Array.from({length:steps+1},(_,i)=>{
+  const played=Math.floor(v.games*i/steps);
+  return played*(v.cash-v.b);
+ }));
+ paths=all;
+ estimateLossMonteCarlo(v);
+ simulationConfig={games:v.games,interval:v.interval,rebate:v.rebate};
+ hoveredLine=-1;hoveredStep=0;tip.hidden=true;
+ updateInsights(v);
+ animateChart();
+ $('chartStatus').textContent=`${count} simulações + expectativa (8 linhas) de ${num(v.games)} jogos · multiplicadores e pagamentos oficiais · colocações modeladas.`;
+}
+function draw(){
+ const c=$('chart'),ctx=c.getContext('2d'),g=chartGeometry(),rect=g.r,dpr=devicePixelRatio||1;
+ c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const w=rect.width,h=rect.height,pad=g.pad,X=g.X,Y=g.Y;
+ ctx.clearRect(0,0,w,h);ctx.font='11px system-ui';ctx.textAlign='right';
+ for(let i=0;i<=4;i++){
+  const v=g.min+(g.max-g.min)*i/4,y=Y(v);
+  ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--border');ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
+  ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');
+  ctx.fillText('$'+Math.round(v).toLocaleString('pt-BR'),pad.l-10,y+4);
+ }
+ if(paths){
+  const maxStep=Math.max(0,Math.min(120,Math.floor(120*animationProgress)));
+  paths.forEach((a,j)=>{
+   if(!visibleLine(j))return;
+   ctx.strokeStyle=chartColors[j];
+   ctx.globalAlpha=hoveredLine===-1?0.85:hoveredLine===j?1:0.12;
+   ctx.lineWidth=hoveredLine===j?3.7:j===paths.length-1?2.7:1.8;
+   ctx.beginPath();
+   for(let i=0;i<=maxStep;i++){
+    const y=Y(chartValue(j,i));if(i)ctx.lineTo(X(i),y);else ctx.moveTo(X(i),y);
+   }
+   ctx.stroke();
+  });
+  ctx.globalAlpha=1;
+  if(hoveredLine>=0&&hoveredStep<=maxStep){
+   const x=X(hoveredStep),y=Y(chartValue(hoveredLine,hoveredStep));
+   ctx.strokeStyle=chartColors[hoveredLine];ctx.setLineDash([4,5]);ctx.globalAlpha=.4;
+   ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,h-pad.b);ctx.stroke();
+   ctx.setLineDash([]);ctx.globalAlpha=1;ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);
+   ctx.fillStyle=chartColors[hoveredLine];ctx.fill();ctx.lineWidth=2;
+   ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--panel');ctx.stroke();
+  }
+ }else{
+  ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');
+  ctx.fillText('Aguardando simulação',w/2,h/2);
+ }
+ ctx.textAlign='center';ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--muted');
+ ctx.fillText('0',pad.l,h-9);ctx.fillText('Jogos',w/2,h-9);
+ ctx.fillText(num(clamp(N('games'),1,100000)),w-pad.r-20,h-9);
+}
+const chartColors=['#00CFFF','#FFB454','#B58CFF','#FF6B8B','#5BD6B1','#F0D65C','#6F9FFF','#12B886'];
+let hoveredLine=-1,hoveredStep=0;
+function chartGeometry(){const c=$('chart'),r=c.getBoundingClientRect(),pad={l:72,r:14,t:20,b:35};const values=paths?chartValues().filter((_,j)=>visibleLine(j)).flat():[-100,0,100];if(!values.length)values.push(-100,0,100);let min=Math.min(...values),max=Math.max(...values);if(max===min){max++;min--}const range=max-min;min-=range*.12;max+=range*.12;return {r,pad,min,max,X:i=>pad.l+i/120*(r.width-pad.l-pad.r),Y:v=>pad.t+(max-v)/(max-min)*(r.height-pad.t-pad.b)}}
+const chart=$('chart'),tip=$('chartTooltip');
+chart.addEventListener('pointermove',e=>{if(!paths)return;const g=chartGeometry(),x=e.clientX-g.r.left,y=e.clientY-g.r.top;const step=Math.max(0,Math.min(Math.floor(120*animationProgress),Math.round((x-g.pad.l)/(g.r.width-g.pad.l-g.pad.r)*120)));let nearest=-1,dist=Infinity;paths.forEach((a,j)=>{if(!visibleLine(j))return;const d=Math.abs(g.Y(chartValue(j,step))-y);if(d<dist){dist=d;nearest=j}});if(nearest<0||x<g.pad.l-12||x>g.r.width-g.pad.r+12||dist>17){if(hoveredLine!==-1){hoveredLine=-1;tip.hidden=true;draw()}return;}hoveredLine=nearest;hoveredStep=step;const isExpected=nearest===paths.length-1;const played=Math.floor(Number($('games').value)*step/120);tip.innerHTML='<strong style="color:'+chartColors[nearest]+'">'+(isExpected?'Expectativa':'Simulação '+(nearest+1))+'</strong><span>'+num(played)+' jogos</span><b>'+fmt(chartValue(nearest,step))+'</b>';tip.hidden=false;const tx=g.X(step),ty=g.Y(chartValue(nearest,step));tip.style.left=Math.min(g.r.width-160,Math.max(4,tx+14))+'px';tip.style.top=Math.max(4,Math.min(g.r.height-84,ty-84))+'px';draw();});
+chart.addEventListener('pointerleave',()=>{hoveredLine=-1;tip.hidden=true;draw()});
 const buy=$('buy');buy.innerHTML=Object.keys(DATA).sort((a,b)=>Number(a)-Number(b)).map(x=>`<option value="${x}">$${Number(x).toLocaleString('en-US',{maximumFractionDigits:2})}</option>`).join('');buy.value='5';
-function refresh(){paths=null;calculate();draw();$('chartStatus').textContent='Parâmetros alterados. Execute uma nova simulação.'}
-['buy','cev','rb','rbinterval','games'].forEach(id=>$(id).addEventListener('input',refresh));$('run').onclick=simulate;window.izgameRedrawChart=draw;addEventListener('resize',draw);
+function refresh(){riskJob++;riskSamples=null;cancelChartAnimation();clearInsights();paths=null;simulationConfig=null;hoveredLine=-1;tip.hidden=true;calculate();draw();$('chartStatus').textContent='Parâmetros alterados. Execute uma nova simulação.'}
+['buy','cev','rb','rbinterval','games'].forEach(id=>$(id).addEventListener('input',refresh));function setResultMode(mode){resultMode=mode;for(const [id,value] of [['modePre','pre'],['modePost','post']]){const active=value===mode;$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active));}calculate();if(paths){hoveredLine=-1;tip.hidden=true;updateInsights(calculate());draw();}}
+
+function clearInsights(){
+ for(const id of ['bestSim','worstSim','lossChance','games95'])$(id).textContent='—';
+ $('lossSampleNote').textContent='Amostra Monte Carlo independente das 7 linhas do gráfico';
+ $('bestSimName').textContent='Execute uma simulação';$('worstSimName').textContent='Execute uma simulação';
+ $('lossContext').textContent='Estimativa para o volume escolhido';
+}
+function updateInsights(v){
+ if(!paths)return;
+ const ends=paths.slice(0,7).map((_,j)=>({j,value:chartValue(j,120)}));
+ const best=ends.reduce((a,b)=>b.value>a.value?b:a),worst=ends.reduce((a,b)=>b.value<a.value?b:a);
+ $('bestSim').textContent=fmt(best.value);$('bestSim').className=best.value>=0?'positive':'negative';
+ $('bestSimName').textContent='Simulação '+(best.j+1)+' · '+num(v.games)+' jogos';
+ $('worstSim').textContent=fmt(worst.value);$('worstSim').className=worst.value>=0?'positive':'negative';
+ $('worstSimName').textContent='Simulação '+(worst.j+1)+' · '+num(v.games)+' jogos';
+ // A probabilidade é estimada separadamente por Monte Carlo, sem aproximação normal.
+ // A mesma amostra base serve aos modos PRÉ/PÓS, evitando novos sorteios na alternância.
+ updateMonteCarloLabels(v);
+
+}
+let riskSamples=null,riskJob=0;
+function updateMonteCarloLabels(v){
+ if(!riskSamples || riskSamples.games!==v.games){
+  $('lossChance').textContent='Calculando…';
+  $('lossContext').textContent='Amostragem Monte Carlo em andamento';
+  $('games95').textContent='—';
+  return;
+ }
+ const rebate=(resultMode==='post'?Math.floor(v.games/v.interval)*v.interval*v.rebate:0);
+ const negatives=riskSamples.profits.filter(x=>x+rebate<0).length;
+ const n=riskSamples.profits.length;
+ const phat=negatives/n, z=1.95996398454;
+ const denom=1+z*z/n;
+ const center=(phat+z*z/(2*n))/denom;
+ const margin=z*Math.sqrt(phat*(1-phat)/n+z*z/(4*n*n))/denom;
+ const percent=x=>(100*x).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+ $('lossChance').textContent=percent(phat);
+ $('lossContext').textContent=num(v.games)+' jogos · IC 95%: '+percent(Math.max(0,center-margin))+' a '+percent(Math.min(1,center+margin));
+ $('games95').textContent=num(negatives)+' / '+num(n);
+ $('lossSampleNote').textContent='Amostras com prejuízo · '+(resultMode==='post'?'após':'antes do')+' rakeback';
+}
+function estimateLossMonteCarlo(v){
+ const job=++riskJob;
+ riskSamples=null;
+ updateMonteCarloLabels(v);
+ const outcomes=[],cdf=[];let total=0;
+ for(const r of v.rs)for(let i=0;i<3;i++){
+  const probability=r.f/DEN*v.p[i];
+  if(probability<=0)continue;
+  total+=probability;cdf.push(total);outcomes.push(r.prizes[i]-v.b);
+ }
+ const profits=[],target=1500,batch=30;
+ function work(){
+  if(job!==riskJob)return;
+  const stop=Math.min(target,profits.length+batch);
+  while(profits.length<stop){
+   let gain=0;
+   for(let i=0;i<v.games;i++){
+    const u=Math.random();let k=0;
+    while(k<cdf.length-1&&u>=cdf[k])k++;
+    gain+=outcomes[k];
+   }
+   profits.push(gain);
+  }
+  if(profits.length<target){requestAnimationFrame(work);return;}
+  riskSamples={games:v.games,profits};
+  updateMonteCarloLabels(calculate());
+ }
+ requestAnimationFrame(work);
+}
+function setSeriesVisibility(kind){
+ if(kind==='sim')showSimulations=!showSimulations;else showExpectation=!showExpectation;
+ $('toggleSim').setAttribute('aria-pressed',String(showSimulations));
+ $('toggleExp').setAttribute('aria-pressed',String(showExpectation));
+ hoveredLine=-1;tip.hidden=true;draw();
+}
+$('toggleSim').addEventListener('click',()=>setSeriesVisibility('sim'));
+$('toggleExp').addEventListener('click',()=>setSeriesVisibility('exp'));
+
+$('modePre').addEventListener('click',()=>setResultMode('pre'));
+$('modePost').addEventListener('click',()=>setResultMode('post'));
+$('run').onclick=simulate;window.izgameRedrawChart=draw;addEventListener('resize',draw);
 for(const [stake,d] of Object.entries(DATA)){if(d.f.reduce((a,b)=>a+b,0)!==DEN)console.error('Frequências inválidas',stake)}calculate();draw();
+</script><script>
+/* Sincroniza indicadores adicionais e a altura do painel direito com a coluna esquerda. */
+(()=>{
+ const byId=id=>document.getElementById(id);
+ const panel=document.querySelector('.chart-insights');
+ const leftColumn=document.querySelector('.layout > .stack');
+ if(!panel||!leftColumn)return;
+ const syncHeight=()=>{
+  if(window.innerWidth>1280){
+   const target=Math.ceil(leftColumn.getBoundingClientRect().height);
+   panel.style.height=target+'px';
+   panel.style.maxHeight=target+'px';
+  }else{panel.style.height='';panel.style.maxHeight='';}
+ };
+ if('ResizeObserver' in window)new ResizeObserver(syncHeight).observe(leftColumn);
+ window.addEventListener('resize',syncHeight,{passive:true});
+ const update=()=>{
+  const n=Number(byId('games')?.value||0);
+  if(byId('insightVolume'))byId('insightVolume').textContent=new Intl.NumberFormat('pt-BR').format(n)+' jogos';
+  const post=byId('modePost')?.getAttribute('aria-pressed')==='true';
+  if(byId('insightMode'))byId('insightMode').textContent=post?'PÓS · com rakeback':'PRÉ · sem rakeback';
+  if(byId('insightExpected'))byId('insightExpected').textContent=byId('profit')?.textContent||'—';
+ };
+ for(const id of ['games','buy','cev','rb','rbinterval']){
+  const el=byId(id);if(el){el.addEventListener('input',update);el.addEventListener('change',update)}
+ }
+ for(const id of ['modePre','modePost','run'])byId(id)?.addEventListener('click',()=>queueMicrotask(update));
+ if('MutationObserver' in window){
+  const profit=byId('profit');if(profit)new MutationObserver(update).observe(profit,{childList:true,characterData:true,subtree:true});
+ }
+ update();syncHeight();
+})();
 </script></body></html>
